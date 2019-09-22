@@ -1,0 +1,8 @@
+prefix=/home/azeng/src_py3/avdrift/ws/install
+
+Name: drift_gym
+Description: Description of drift_gym
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/azeng/src_py3/avdrift/ws/install/lib 
+Requires: 

@@ -1,0 +1,2 @@
+drift_agent:drift_gym:drift_rc:drift_sim
+-DCATKIN_DEVEL_PREFIX=/home/azeng/src_py3/avdrift/ws/devel -DCMAKE_INSTALL_PREFIX=/home/azeng/src_py3/avdrift/ws/install -G Unix Makefiles

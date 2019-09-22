@@ -1,0 +1,8 @@
+prefix=/home/azeng/src_py3/avdrift/ws/devel
+
+Name: drift_sim
+Description: Description of drift_sim
+Version: 0.0.0
+Cflags: 
+Libs: -L/home/azeng/src_py3/avdrift/ws/devel/lib 
+Requires: 
