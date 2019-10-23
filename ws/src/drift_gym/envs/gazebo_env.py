@@ -30,10 +30,10 @@ class GazeboEnv(gym.Env):
         def __init__(self, continuous=False, state_info=DEFAULT_STATE_INFO, four_wheel_drive=False):
                 rospy.init_node('gazebo_drift_car_gym')
                 
-                self.gazeboProcess = subprocess.Popen(["roslaunch", "drift_car_gazebo", "drift_car.launch"])
+                self.gazeboProcess = subprocess.Popen(["roslaunch", "drift_sim", "drift_sim.launch"])
                 time.sleep(10)
                 # self.estimateProcess = subprocess.Popen(["roslaunch", "drift_car_gazebo", "gazebo_ekf.launch"])
-                self.controlProcess = subprocess.Popen(["roslaunch", "drift_car_gazebo_control", "drift_car_control.launch"])
+                self.controlProcess = subprocess.Popen(["roslaunch", "drift_sim", "drift_car_control.launch"])
                 time.sleep(5)
                                 
                 print ("Gazebo launched!")      
@@ -351,7 +351,7 @@ class GazeboEnv(gym.Env):
                 tmp = os.popen("ps -Af").read()
                 gzserver_count = tmp.count('gzserver')
                 gzclient_count = tmp.count('gzclient')
-                control_count = tmp.count('/usr/bin/python /opt/ros/kinetic/bin/roslaunch drift_car_gazebo_control drift_car_control.launch')               
+                control_count = tmp.count('/usr/bin/python /opt/ros/kinetic/bin/roslaunch drift_sim drift_car_control.launch')
                 
                 if gzclient_count > 0:
                     os.system("killall -9 gzclient")
@@ -363,9 +363,9 @@ class GazeboEnv(gym.Env):
                 if (gzclient_count or gzserver_count or control_count > 0):
                     os.wait()
                         
-                self.gazeboProcess = subprocess.Popen(["roslaunch", "drift_car_gazebo", "drift_car.launch"])
+                self.gazeboProcess = subprocess.Popen(["roslaunch", "drift_sim", "drift_car.launch"])
                 time.sleep(10)
-                self.controlProcess = subprocess.Popen(["roslaunch", "drift_car_gazebo_control", "drift_car_control.launch"])
+                self.controlProcess = subprocess.Popen(["roslaunch", "drift_sim", "drift_car_control.launch"])
                 time.sleep(5)
     
         def getIMUData(self):

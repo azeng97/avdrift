@@ -25,8 +25,8 @@
  We are also using the 400 kHz fast I2C mode by setting the TWI_FREQ  to 400000L /twi.h utility file.
  */
 #include "Wire.h"  
-//#include <ros.h>
-//#include <sensor_msgs/Imu.h>
+#include <ros.h>
+#include <sensor_msgs/Imu.h>
 // Define registers per MPU6050, Register Map and Descriptions, Rev 4.2, 08/19/2013 6 DOF Motion sensor fusion device
 // Invensense Inc., www.invensense.com
 // See also MPU-9150 Register Map and Descriptions, Revision 4.0, RM-MPU-9150A-00, 9/12/2012 for registers not listed in 
@@ -244,18 +244,18 @@ float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};    // vector to hold quaternion
 float eInt[3] = {0.0f, 0.0f, 0.0f};       // vector to hold integral error for Mahony method
 
 // ros global variables
-//sensor_msgs::Imu imu;
-//ros::NodeHandle nh;
-//ros::Publisher pub_imu("imu", &imu);
+sensor_msgs::Imu imu;
+// ros::NodeHandle nh;
+ros::Publisher pub_imu("imu", &imu);
 
 
-void setup()
+void setup_imu()
 {
   Wire.begin();
   Serial.begin(38400);
 
-  //nh.initNode();
-  //nh.advertise(pub_imu);
+  nh.initNode();
+  nh.advertise(pub_imu);
  
   // Set up the interrupt pin, its set as active high, push-pull
   pinMode(intPin, INPUT);
@@ -315,7 +315,7 @@ void setup()
   }
 }
 
-void loop()
+void loop_imu()
 {  
     // If intPin goes high or data ready status is TRUE, all data registers have new data
     if (readByte(MPU9150_ADDRESS, INT_STATUS) & 0x01) {  // On interrupt, check if data ready interrupt
@@ -474,19 +474,19 @@ void loop()
     blinkOn = ~blinkOn;
     count = millis();  
     }
-    //imu.orientation.x = q[1];
-    //imu.orientation.y = q[2];
-    //imu.orientation.z = q[3];
-    //imu.orientation.w = q[0];
-    //imu.angular_velocity.x = gx;
-    //imu.angular_velocity.y = gy;
-    //imu.angular_velocity.z = gz;
-    //imu.linear_acceleration.x = ax;
-    //imu.linear_acceleration.y = ay;
-    //imu.linear_acceleration.z = az;
+    imu.orientation.x = q[1];
+    imu.orientation.y = q[2];
+    imu.orientation.z = q[3];
+    imu.orientation.w = q[0];
+    imu.angular_velocity.x = gx;
+    imu.angular_velocity.y = gy;
+    imu.angular_velocity.z = gz;
+    imu.linear_acceleration.x = ax;
+    imu.linear_acceleration.y = ay;
+    imu.linear_acceleration.z = az;
 
-    //pub_imu.publish(&imu);
-    //nh.spinOnce();
+    pub_imu.publish(&imu);
+    // nh.spinOnce();
 }
 
 }

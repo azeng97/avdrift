@@ -1,6 +1,6 @@
 <launch>
         <include file="$(find gazebo_ros)/launch/empty_world.launch">
-                <arg name="world_name" value="$(find drift_sim)/worlds/drift_sim.world"/>
+                <arg name="world_name" value="$(find drift_sim)/worlds/drift_car.world"/>
                 <arg name="gui" value="false"/>
         </include>
         <param name="robot_description" command="$(find xacro)/xacro $(find drift_sim)/urdf/drift_car.urdf.xacro" />

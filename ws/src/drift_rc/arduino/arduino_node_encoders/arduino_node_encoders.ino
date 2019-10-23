@@ -225,6 +225,8 @@ void setup()
   t0 = millis();
   ecu_t0 = millis();
 
+  // setup_imu();
+
 }
 
 
@@ -272,6 +274,7 @@ void loop() {
     t0 = millis();
   }
 
+  // loop_imu();
   nh.spinOnce();
 }
 
