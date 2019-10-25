@@ -1,1 +1,0 @@
-/usr/bin/c++  -fPIC   -shared -Wl,-soname,libgtest.so -o libgtest.so CMakeFiles/gtest.dir/src/gtest-all.cc.o  -L/home/azeng/src_py3/avdrift/ws/build/gtest/gtest/src -lpthread -Wl,-rpath,/home/azeng/src_py3/avdrift/ws/build/gtest/gtest/src 

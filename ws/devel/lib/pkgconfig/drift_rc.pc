@@ -1,8 +1,0 @@
-prefix=/home/azeng/src_py3/avdrift/ws/devel
-
-Name: drift_rc
-Description: Description of drift_rc
-Version: 0.0.0
-Cflags: 
-Libs: -L/home/azeng/src_py3/avdrift/ws/devel/lib 
-Requires: 

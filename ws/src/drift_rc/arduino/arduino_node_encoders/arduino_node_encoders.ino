@@ -1,3 +1,7 @@
+#include <ArduinoTcpHardware.h>
+#include <ros.h>
+#include <ArduinoHardware.h>
+
 /* ---------------------------------------------------------------------------
 # Licensing Information: You are free to use or extend these projects for
 # education or reserach purposes provided that (1) you retain this notice
@@ -225,7 +229,7 @@ void setup()
   t0 = millis();
   ecu_t0 = millis();
 
-  // setup_imu();
+  setup_imu();
 
 }
 
@@ -274,7 +278,7 @@ void loop() {
     t0 = millis();
   }
 
-  // loop_imu();
+  loop_imu();
   nh.spinOnce();
 }
 

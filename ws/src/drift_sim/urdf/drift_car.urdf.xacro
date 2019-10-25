@@ -46,7 +46,7 @@ limitations under the License.
   <!-- chassis_length is measured along the x axis, chassis_width
        along the y axis, and chassis_height along the z axis. -->
   <xacro:property name="chassis_length" value="0.32"/>
-  <xacro:property name="chassis_width" value="0.09"/>
+  <xacro:property name="chassis_width" value="0.13"/>
   <xacro:property name="chassis_height" value="0.01"/>
   <xacro:property name="chassis_mass" value="2"/>
 
@@ -56,7 +56,7 @@ limitations under the License.
        is a "zero offset" wheel. hex_hub_depth = tire_width / 2 -
        axle_length. -->
   <xacro:property name="hub_dia" value="0.05"/>
-  <xacro:property name="tire_dia" value="0.065"/>
+  <xacro:property name="tire_dia" value="0.06"/>
   <xacro:property name="tire_width" value="0.025"/>
   <xacro:property name="hex_hub_depth" value="0.012"/>
   <xacro:property name="wheel_mass" value="0.3"/>
@@ -66,9 +66,9 @@ limitations under the License.
        from a U joint to the corresponding hex hub. wheel_travel is the
        vertical wheel travel. -->
   <xacro:property name="wheelbase" value="0.26"/>
-  <xacro:property name="hex_hub_dist" value="0.23"/>
+  <xacro:property name="hex_hub_dist" value="0.17"/>
   <xacro:property name="axle_length" value="0.01"/>
-  <xacro:property name="wheel_travel" value="0.01"/>
+  <xacro:property name="wheel_travel" value="0.015"/>
   <xacro:property name="shock_z_offset" value="0.0655"/>
 
   <!-- The specifications for a Titan(R) 550 motor could not be found, so the
@@ -270,10 +270,36 @@ limitations under the License.
   <gazebo reference="base_link">
     <material>Gazebo/Red</material>
   </gazebo>
-  
+
+  <joint name="hedge_joint" type="fixed">
+		<axis xyz="1 0 0"/>
+		<origin xyz="-0.16 0.0 0.08"/>
+		<parent link="base_link"/>
+		<child link="hedge_link"/>
+  </joint>
+	<link name="hedge_link">
+	  <inertial>
+	    <mass value="0.001"/>
+	    <origin rpy="0 0 0" xyz="0 0 0"/>
+	    <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.000001" iyz="0" izz="0.0001"/>
+	  </inertial>
+	  <visual>
+	    <origin rpy="0 0 0" xyz="0 0 0"/>
+	    <geometry>
+	      <box size="0.001 0.001 0.001"/>
+	    </geometry>
+	  </visual>
+	  <collision>
+	    <origin rpy="0 0 0" xyz="0 0 0"/>
+	    <geometry>
+	      <box size=".001 .001 .001"/>
+	    </geometry>
+	  </collision>
+	</link>
+
   <joint name="imu_joint" type="fixed">
 		<axis xyz="1 0 0"/>
-		<origin xyz="0 0 0.19"/>
+		<origin xyz="-0.16 0.025 0.19"/>
 		<parent link="base_link"/>
 		<child link="imu_link"/>
   </joint>
