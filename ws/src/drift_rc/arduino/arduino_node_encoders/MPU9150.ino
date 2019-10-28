@@ -26,6 +26,7 @@
  */
 #include "Wire.h"  
 #include <ros.h>
+#include <ros/time.h>
 #include <sensor_msgs/Imu.h>
 // Define registers per MPU6050, Register Map and Descriptions, Rev 4.2, 08/19/2013 6 DOF Motion sensor fusion device
 // Invensense Inc., www.invensense.com
@@ -484,7 +485,8 @@ void loop_imu()
     imu.linear_acceleration.x = ax;
     imu.linear_acceleration.y = ay;
     imu.linear_acceleration.z = az;
-
+    imu.header.stamp = nh.now();
+    imu.header.frame_id = "imu_link";
     pub_imu.publish(&imu);
     // nh.spinOnce();
 }

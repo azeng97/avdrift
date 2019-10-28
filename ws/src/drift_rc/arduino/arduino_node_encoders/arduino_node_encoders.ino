@@ -1,7 +1,3 @@
-#include <ArduinoTcpHardware.h>
-#include <ros.h>
-#include <ArduinoHardware.h>
-
 /* ---------------------------------------------------------------------------
 # Licensing Information: You are free to use or extend these projects for
 # education or reserach purposes provided that (1) you retain this notice
