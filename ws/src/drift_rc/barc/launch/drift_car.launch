@@ -8,6 +8,6 @@
   </node>
 
   <node pkg="rosserial_python" type="serial_node.py" name="drift_car_core" output="screen">
-    <param name="port" value="/dev/ttyACM0"/>
+    <param name="port" value="/dev/ttyACM1"/>
   </node>
 </launch>
