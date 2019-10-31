@@ -58,10 +58,10 @@ class Car {
     // Pin assignments
     const int ENC_FL_PIN = 3;
     const int ENC_FR_PIN = 2;
-    const int ENC_BL_PIN = 6;
-    const int ENC_BR_PIN = 5;
-    const int THROTTLE_PIN = 7;
-    const int STEERING_PIN = 8;
+    const int ENC_BL_PIN = 15;
+    const int ENC_BR_PIN = 14;
+    const int THROTTLE_PIN = 12;
+    const int STEERING_PIN = 50;
     const int MOTOR_PIN = 10;
     const int SERVO_PIN= 9;
 
@@ -72,11 +72,11 @@ class Car {
     // Motor limits
     // TODO  fix limits?
     const int MOTOR_MAX = 2000;
-    const int MOTOR_MIN = 800;
-    const int MOTOR_NEUTRAL = 1500;
-    const int THETA_CENTER = 1500;
-    const int THETA_MAX = 1900;
-    const int THETA_MIN = 1100;
+    const int MOTOR_MIN = 1024;
+    const int MOTOR_NEUTRAL = 1496;
+    const int THETA_CENTER = 1520;
+    const int THETA_MAX = 2048;
+    const int THETA_MIN = 1036;
 
     // Interfaces to motor and steering actuators
     Servo motor;

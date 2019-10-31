@@ -2,7 +2,7 @@ import gym
 from gym import error, spaces, utils
 from gym.utils import seeding
 import rospy
-from barc.msgs import ECU
+from barc.msg import ECU
 from sensor_msgs.msg import Imu
 from geometry_msgs.msg import PoseWithCovarianceStamped, Vector3Stamped, TransformStamped
 from nav_msgs.msg import Odometry
@@ -20,8 +20,7 @@ class DriftCarEnv(gym.Env):
         rospy.init_node("drift_car_env")
         self.ecu = rospy.Publisher("ecu_pwm", ECU, queue_size=1)
         self.reward_range = (-np.inf, np.inf)
-        high = np.array([0.436])
-        self.action_space = spaces.Box(-high, high)
+        self.action_space = spaces.Box(np.array([-0.366519]), np.array([0.366519]))
         self.state_info = state_info
         high = np.ones(len(self.state_info)) * np.finfo(np.float32).max
         self.observation_space = spaces.Box(-high, high)
@@ -42,14 +41,10 @@ class DriftCarEnv(gym.Env):
         posData = self.getOdom()
         # imuData = self.getIMUData()
 
-        self.pausePhysics()
 
         state = self.getState(posData)
         # rewardState = [state[-4], state[-2], state[-1]]
-        reward = self.getRewardExponential(state)
-
-        if self.evaluation:
-            self.rewards.append(reward)
+        reward = self.getReward(state)
 
         done = self.isDone(posData)
 
@@ -60,14 +55,19 @@ class DriftCarEnv(gym.Env):
 
 
     def _reset(self):
+        rospy.sleep(5)
+        posData = self.getOdom()
+        state = self.getState(posData)
+        return state
 
     def _render(self, mode='human', close=False):
+        pass
 
 
     def publish_throttle_steering(self, action):
         msg = ECU()
-        msg.motor = action[0]
-        msg.servo = action[1]
+        msg.motor = self.throttle
+        msg.servo = action*(500/0.366519) + 1520
         self.ecu.publish(msg)
 
     def getReward(self, state):
@@ -89,8 +89,8 @@ class DriftCarEnv(gym.Env):
 
     def isDone(self, posData):
         # Done is true if the car ventures too far from the center of the circular drift
-        x = posData.pose[1].position.x
-        y = posData.pose[1].position.y
+        x = posData.pose.pose.position.x
+        y = posData.pose.pose.position.y
         return (self.maxDeviationFromCenter <= ((x ** 2 + y ** 2) ** 0.5))
 
     def getState(self, posData):
@@ -98,14 +98,14 @@ class DriftCarEnv(gym.Env):
         # velxEstimate = odomEstimate.twist.twist.linear.x
         # velyEstimate = odomEstimate.twist.twist.linear.y
 
-        pose = posData.pose[1]
+        pose = posData.pose.pose
         position = pose.position
         orientation = pose.orientation
 
-        t = tf.TransformerROS(True, rospy.Duration(10.0))
+        t = tf.TransformListener()
         m = TransformStamped()
-        m.header.frame_id = 'world'
-        m.child_frame_id = 'base_link'
+        m.header.frame_id = 'map'
+        m.child_frame_id = 'drift_car/base_link'
         m.transform.translation.x = position.x
         m.transform.translation.y = position.y
         m.transform.translation.z = position.z
@@ -118,24 +118,25 @@ class DriftCarEnv(gym.Env):
             [orientation.x, orientation.y, orientation.z, orientation.w])
         t.setTransform(m)
 
-        velx = posData.twist[1].linear.x
-        vely = posData.twist[1].linear.y
-        velz = posData.twist[1].linear.z
+        velx = posData.twist.twist.linear.x
+        vely = posData.twist.twist.linear.y
+        velz = posData.twist.twist.linear.z
 
         # Transform to body frame velocities
         velVector = Vector3Stamped()
         velVector.vector.x = velx
         velVector.vector.y = vely
         velVector.vector.z = velz
-        velVector.header.frame_id = "world"
+        velVector.header.frame_id = "map"
         # velVectorTransformed = self.tl.transformVector3("base_link", velVector)
-        velVectorTransformed = t.transformVector3("base_link", velVector)
+        t.waitForTransform('/drift_car/base_link', 'map', rospy.Time(), rospy.Duration(0.1))
+        velVectorTransformed = t.transformVector3("drift_car/base_link", velVector)
         velxBody = velVectorTransformed.vector.x
         velyBody = velVectorTransformed.vector.y
         velzBody = velVectorTransformed.vector.z
 
         carTangentialSpeed = math.sqrt(velx ** 2 + vely ** 2)
-        carAngularVel = posData.twist[1].angular.z
+        carAngularVel = posData.twist.twist.angular.z
 
         stateInfo = {
             "x": position.x, "y": position.y,
@@ -152,7 +153,7 @@ class DriftCarEnv(gym.Env):
             state.append(stateInfo[key])
 
             # rewardState = [stateInfo["thetadot"], stateInfo["xdotbodyframe"], stateInfo["ydotbodyframe"]]
-
+        # print(state)
         return np.array(state)
 
     def getOdom(self):

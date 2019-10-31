@@ -23,3 +23,8 @@ register(
     # state: thetaDot, xDotBodyFrame, yDotBodyFrame
     kwargs={'continuous' : True, 'four_wheel_drive': True}
 )
+
+register(
+    id='DriftCar-v1',
+    entry_point='drift_gym.envs:DriftCarEnv'
+)

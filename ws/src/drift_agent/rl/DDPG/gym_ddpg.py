@@ -6,6 +6,7 @@ gc.enable()
 import gym
 import drift_gym
 ENV_NAME = "DriftCarGazeboContinuous4WD-v1"
+# ENV_NAME = "DriftCar-v1"
 EPISODES = 100000
 TEST = 10
 MAX_STEPS = 300

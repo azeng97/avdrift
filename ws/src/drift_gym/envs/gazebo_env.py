@@ -62,7 +62,7 @@ class GazeboEnv(gym.Env):
                 #Action related
                 self.continuous = continuous
                 if continuous:
-                        high = np.array([0.436])
+                        high = np.array([0.366519])
                         self.action_space = spaces.Box(-high, high)
                 else:
                         minDegrees = 45

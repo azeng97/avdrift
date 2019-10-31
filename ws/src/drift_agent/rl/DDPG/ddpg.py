@@ -28,7 +28,6 @@ class DDPG:
         # with both their target networks
         self.state_dim = env.observation_space.shape[0]
         self.action_dim = env.action_space.shape[0]
-
         self.sess = tf.InteractiveSession()
 
         self.actor_network = ActorNetwork(self.sess,self.state_dim,self.action_dim)
