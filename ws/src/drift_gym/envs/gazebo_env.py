@@ -33,10 +33,12 @@ class GazeboEnv(gym.Env):
                 self.gazeboProcess = subprocess.Popen(["roslaunch", "drift_sim", "drift_sim.launch"])
                 time.sleep(10)
                 # self.estimateProcess = subprocess.Popen(["roslaunch", "drift_car_gazebo", "gazebo_ekf.launch"])
+
                 self.controlProcess = subprocess.Popen(["roslaunch", "drift_sim", "drift_car_control.launch"])
                 time.sleep(5)
                                 
-                print ("Gazebo launched!")      
+
+                print ("Gazebo launched!")
                 
                 self.gzclient_pid = 0
                 self.four_wheel_drive = four_wheel_drive
@@ -84,9 +86,9 @@ class GazeboEnv(gym.Env):
                   
                 # Learning Parameters
                 self.radius = 1
-                self.throttle = 1750      
-                self.maxDeviationFromCenter = 4
-                self.evaluation = True
+                self.throttle = 1840
+                self.maxDeviationFromCenter = 6
+                self.evaluation = False
                 if self.evaluation:
                         print("Evaluating")
                         self.rewards = []
@@ -206,17 +208,17 @@ class GazeboEnv(gym.Env):
         def getRewardExponential(self, state):
                 # desiredTangentialSpeed = 5          # Tangential speed with respect to car body.
                 # desiredNormalSpeed  = 0           # Perfect circular motion
-                desiredAngularVel = -3.5
-                desiredForwardVel = 0.5
-                desiredSideVel = 2
+                desiredAngularVel = -2
+                desiredForwardVel = 1.0
+                desiredSideVel = 2.0
 
                 # velx = posData.twist[1].linear.x
                 # vely = posData.twist[1].linear.y
                 # carTangentialSpeed = math.sqrt(velx ** 2 + vely ** 2)
                 # carAngularVel = posData.twist[1].angular.z
-                carAngularVel = state[0]
-                carForwardVel = state[1]
-                carSideVel = state[2]
+                carAngularVel = state[-4]
+                carForwardVel = state[-2]
+                carSideVel = state[-1]
 
                 # x = state[0]
                 # y = state[1]
@@ -233,7 +235,7 @@ class GazeboEnv(gym.Env):
                 #                (carAngularVel - desiredAngularVel)**2
 
                 # 1 - exp for Cost
-                # exp - 1 for reward
+                # exp for reward
                 return math.exp(-deviationMagnitude/(2 * sigma1**2))
         
         def getRewardPotentialBased(self, action, posData):
@@ -363,7 +365,7 @@ class GazeboEnv(gym.Env):
                 if (gzclient_count or gzserver_count or control_count > 0):
                     os.wait()
                         
-                self.gazeboProcess = subprocess.Popen(["roslaunch", "drift_sim", "drift_car.launch"])
+                self.gazeboProcess = subprocess.Popen(["roslaunch", "drift_sim", "drift_sim.launch"])
                 time.sleep(10)
                 self.controlProcess = subprocess.Popen(["roslaunch", "drift_sim", "drift_car_control.launch"])
                 time.sleep(5)

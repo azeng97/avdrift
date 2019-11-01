@@ -16,7 +16,7 @@ CTRL-C to quit
 
 THROTTLE_STEP = 10
 STEER_STEP = 0.05
-throttle = 1650
+throttle = 1840
 servo = 0
 max_servo = 0.36652
 

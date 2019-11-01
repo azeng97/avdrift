@@ -49,7 +49,7 @@ limitations under the License.
   <xacro:property name="chassis_length" value="0.32"/>
   <xacro:property name="chassis_width" value="0.13"/>
   <xacro:property name="chassis_height" value="0.01"/>
-  <xacro:property name="chassis_mass" value="2.5"/>
+  <xacro:property name="chassis_mass" value="15.0"/>
 
   <!-- hub_dia and tire_dia are the diameters of the hub and tire,
        respectively. hex_hub_depth is the distance that the hex hub is
@@ -60,7 +60,7 @@ limitations under the License.
   <xacro:property name="tire_dia" value="0.06"/>
   <xacro:property name="tire_width" value="0.025"/>
   <xacro:property name="hex_hub_depth" value="0.012"/>
-  <xacro:property name="wheel_mass" value="0.3"/>
+  <xacro:property name="wheel_mass" value="0.18"/>
 
   <!-- hex_hub_dist is the distance between left and right hex hubs when
        the shock absorbers are fully extended. axle_length is the distance
@@ -86,8 +86,11 @@ limitations under the License.
        max_speed = 17.8816 m/s
        axle_vel_limit = (2 * pi) * (max_speed / (pi * tire_dia)) =
          550.203076923 rad/s -->
-  <xacro:property name="axle_eff_limit" value="4.388225625"/>
+  <!-- <xacro:property name="axle_eff_limit" value="4.388225625"/> -->
+  <xacro:property name="axle_eff_limit" value="2.888225625"/>
+  <!-- <xacro:property name="axle_vel_limit" value="550.203076923"/> -->
   <xacro:property name="axle_vel_limit" value="550.203076923"/>
+
 
   <!-- These constants are used to simulate a Traxxas 2056 servo operated at
        6 V. servo_stall_torque is measured in N m. servo_no_load_speed is
@@ -245,7 +248,7 @@ limitations under the License.
     </transmission>
 
     <xacro:wheel lr_prefix="${lr_prefix}" fr_prefix="${fr_prefix}"
-                 lr_reflect="${lr_reflect}" mu1="0.3" mu2="0.3"/>
+                 lr_reflect="${lr_reflect}" mu1="0.40" mu2="0.40"/>
   </xacro:macro>
 
   <!-- Rear wheel -->
@@ -255,7 +258,7 @@ limitations under the License.
                  lr_reflect="${lr_reflect}" fr_reflect="${fr_reflect}"
                  child="${lr_prefix}_${fr_prefix}_axle_carrier"/>
     <xacro:wheel lr_prefix="${lr_prefix}" fr_prefix="${fr_prefix}"
-                 lr_reflect="${lr_reflect}" mu1="0.3" mu2="0.3"/>
+                 lr_reflect="${lr_reflect}" mu1="0.40" mu2="0.40"/>
   </xacro:macro>
 
   <!-- base_link must have geometry so that its axes can be displayed in

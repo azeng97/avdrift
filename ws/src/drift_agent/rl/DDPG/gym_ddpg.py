@@ -24,7 +24,7 @@ def main(args):
     max_reward = -100000
     for episode in range(EPISODES):
         state = env.reset()
-        print("episode:",episode)
+        print("episode:", episode)
         # Train
         for step in range(MAX_STEPS):
             action = agent.noise_action(state)
