@@ -10,7 +10,7 @@ np.random.seed(0)
 from utils import rollout, policy
 
 with tf.Session(graph=tf.Graph()) as sess:
-    env = gym.make('InvertedPendulum-v2')
+    env = gym.make('InvertedPendulum-v1')
     # Initial random rollouts to generate a dataset
     X,Y = rollout(env=env, pilco=None, random=True, timesteps=40)
     for i in range(1,3):

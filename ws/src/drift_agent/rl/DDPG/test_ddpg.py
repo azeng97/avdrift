@@ -5,8 +5,8 @@ import gc
 gc.enable()
 import gym
 import drift_gym
-#ENV_NAME = "DriftCarGazeboContinuous4WD-v0"
-ENV_NAME = "DriftCar-v1"
+ENV_NAME = "DriftCarGazeboContinuous4WD-v1"
+#ENV_NAME = "DriftCar-v1"
 TEST = 10
 MAX_STEPS = 100
 import argparse

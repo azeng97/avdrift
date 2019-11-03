@@ -6,9 +6,9 @@ from sensor_msgs.msg import Joy
 import subprocess
 
 MIN_THROTTLE = 1500
-DRIFT_THROTTLE = 1840
+DRIFT_THROTTLE = 1780
 MAX_THROTTLE = 2000
-MAX_SERVO = 0.366519
+MAX_SERVO = 0.80 #0.366519
 env = None
 
 global drifting

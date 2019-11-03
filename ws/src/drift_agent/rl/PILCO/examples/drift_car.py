@@ -1,5 +1,6 @@
 import numpy as np
 import gym
+import drift_gym
 import gpflow
 from pilco.models import PILCO
 from pilco.controllers import RbfController, LinearController
@@ -17,46 +18,38 @@ np.random.seed(0)
 
 class DriftCarWrapper():
     def __init__(self):
-        self.env = gym.make('DriftCarGazeboContinuous4WD-v1').env
+        self.env = gym.make('DriftCarGazeboContinuousBodyFrame4WD-v1')
         self.action_space = self.env.action_space
         self.observation_space = self.env.observation_space
 
-    def state_trans(self, s):
-        a1 = np.arctan2(s[1], s[3])
-        a2 = np.arctan2(s[2], s[4])
-        s_new = np.hstack([s[0], a1, a2, s[5:-3]])
-        return s_new
-
     def step(self, action):
         ob, r, done, _ = self.env.step(action)
-        if np.abs(ob[0])> 0.98 or np.abs(ob[-3]) > 0.1 or  np.abs(ob[-2]) > 0.1 or np.abs(ob[-1]) > 0.1:
-            done = True
-        return self.state_trans(ob), r, done, {}
+        return ob, r, done, {}
 
     def reset(self):
-        ob =  self.env.reset()
-        return self.state_trans(ob)
+        ob = self.env.reset()
+        return ob
 
     def render(self):
         self.env.render()
 
 
 SUBS = 1
-bf = 40
-maxiter=80
-state_dim = 6
+bf = 10
+maxiter = 10
+state_dim = 3
 control_dim = 1
-max_action=1.0 # actions for these environments are discrete
-target = np.zeros(state_dim)
-weights = 3.0 * np.eye(state_dim)
-weights[0,0] = 0.5
-weights[3,3] = 0.5
+max_action = 0.8 # actions for these environments are discrete
+target = np.array([-3.5, 0.5, 2])
+weights = np.eye(state_dim)
+# weights[0,0] = 0.5
+# weights[3,3] = 0.5
 m_init = np.zeros(state_dim)[None, :]
 S_init = 0.01 * np.eye(state_dim)
-T = 40
-J = 1
-N = 12
-T_sim = 130
+T = 100
+J = 7
+N = 15
+T_sim = 100
 restarts=True
 lens = []
 

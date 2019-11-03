@@ -64,7 +64,7 @@ class GazeboEnv(gym.Env):
                 #Action related
                 self.continuous = continuous
                 if continuous:
-                        high = np.array([0.366519])
+                        high = np.array([0.80])
                         self.action_space = spaces.Box(-high, high)
                 else:
                         minDegrees = 45
@@ -86,7 +86,7 @@ class GazeboEnv(gym.Env):
                   
                 # Learning Parameters
                 self.radius = 1
-                self.throttle = 1840
+                self.throttle = 1750
                 self.maxDeviationFromCenter = 6
                 self.evaluation = False
                 if self.evaluation:
@@ -208,17 +208,18 @@ class GazeboEnv(gym.Env):
         def getRewardExponential(self, state):
                 # desiredTangentialSpeed = 5          # Tangential speed with respect to car body.
                 # desiredNormalSpeed  = 0           # Perfect circular motion
-                desiredAngularVel = -2
-                desiredForwardVel = 1.0
-                desiredSideVel = 2.0
-
+                desiredAngularVel = -3
+                desiredForwardVel = 0.8
+                desiredSideVel = 1.5
+                desiredAccel = math.sqrt(desiredForwardVel**2 + desiredForwardVel**2)*desiredAngularVel
                 # velx = posData.twist[1].linear.x
                 # vely = posData.twist[1].linear.y
                 # carTangentialSpeed = math.sqrt(velx ** 2 + vely ** 2)
                 # carAngularVel = posData.twist[1].angular.z
-                carAngularVel = state[-4]
-                carForwardVel = state[-2]
-                carSideVel = state[-1]
+                carAngularVel = state[0]
+                carForwardVel = state[1]
+                carSideVel = state[2]
+                carAccel = math.sqrt(carForwardVel**2 + carSideVel**2)*carAngularVel
 
                 # x = state[0]
                 # y = state[1]
@@ -229,8 +230,9 @@ class GazeboEnv(gym.Env):
                 # sigma2 = 5
                 deviationMagnitude = (carSideVel - desiredSideVel)**2 + \
                                 (carForwardVel - desiredForwardVel)**2 + \
-                                (carAngularVel - desiredAngularVel)**2
-                
+                                (carAngularVel - desiredAngularVel)**2 + \
+                                     (carAccel - desiredAccel)**2
+
                 #deviationMagnitude = (desiredTangentialSpeed - carTangentialSpeed)**2 + \
                 #                (carAngularVel - desiredAngularVel)**2
 
