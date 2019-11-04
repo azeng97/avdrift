@@ -4,14 +4,17 @@ import gym
 import drift_gym
 from sensor_msgs.msg import Joy
 import subprocess
+from std_msgs.msg import Float64MultiArray
+
 
 MIN_THROTTLE = 1500
-DRIFT_THROTTLE = 1780
+DRIFT_THROTTLE = 1750
 MAX_THROTTLE = 2000
-MAX_SERVO = 0.80 #0.366519
+MAX_SERVO = 0.366519 #0.366519
 env = None
 
 global drifting
+
 drifting = False
 
 def translate(value, leftMin, leftMax, rightMin, rightMax):
@@ -37,21 +40,29 @@ def callback(data):
     if drifting:
         # print((MAX_THROTTLE, servo))
         state, _, _, _ = env.step((DRIFT_THROTTLE, servo))
-        print(state[-4:])
+        print(state)
+        stateArray = Float64MultiArray()
+        state = state.tolist()
+        state.append(DRIFT_THROTTLE)
+        state.append(servo)
+        stateArray.data = state
+        pub.publish(stateArray)
     else:
         print("Throttle: " + str(throtle))
         print("Servo: " + str(servo))
         state, _, _, _ = env.step((throtle, servo))
-        print(state[-4:])
+        print(state)
 
 
 if __name__=="__main__":
-    env = gym.make('DriftCarGazeboContinuous4WD-v1')
+    env = gym.make('DriftCarGazeboContinuousBodyFrame4WD-v1')
     env.reset()
     env.render()
 
     subprocess.Popen(["rosrun", "joy", "joy_node"])
     rospy.Subscriber('/joy', Joy, callback, queue_size=1)
+    global pub
+    pub = rospy.Publisher('drift_car/state', Float64MultiArray, queue_size=1)
 
     print("========================================")
     print("Joystick Controller for Gazebo Drift Car")

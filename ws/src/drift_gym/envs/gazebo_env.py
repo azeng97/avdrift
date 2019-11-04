@@ -83,7 +83,9 @@ class GazeboEnv(gym.Env):
                 self.previous_action = -1
                 self.previous_imu = {}
                 self.previous_pos = self.getPosData()
-                  
+
+                self.penalty = 0
+
                 # Learning Parameters
                 self.radius = 1
                 self.throttle = 1750
@@ -138,6 +140,12 @@ class GazeboEnv(gym.Env):
                         self.rewards.append(reward)
 
                 done = self.isDone(posData)
+                if done:
+                        if self.penalty:
+                                reward = 100
+                        else:
+                                reward = -100
+
 
                 #self.previous_imu = imuData
                 self.previous_pos = posData     
@@ -208,8 +216,8 @@ class GazeboEnv(gym.Env):
         def getRewardExponential(self, state):
                 # desiredTangentialSpeed = 5          # Tangential speed with respect to car body.
                 # desiredNormalSpeed  = 0           # Perfect circular motion
-                desiredAngularVel = -3
-                desiredForwardVel = 0.8
+                desiredAngularVel = -4
+                desiredForwardVel = 0.5
                 desiredSideVel = 1.5
                 desiredAccel = math.sqrt(desiredForwardVel**2 + desiredForwardVel**2)*desiredAngularVel
                 # velx = posData.twist[1].linear.x
@@ -238,7 +246,11 @@ class GazeboEnv(gym.Env):
 
                 # 1 - exp for Cost
                 # exp for reward
-                return math.exp(-deviationMagnitude/(2 * sigma1**2))
+                if self.penalty:
+                        cost = 1- math.exp(-deviationMagnitude/(2 * sigma1**2))
+                else:
+                        cost = math.exp(-deviationMagnitude/(2 * sigma1**2))
+                return cost
         
         def getRewardPotentialBased(self, action, posData):
                 reward = 0.0
@@ -438,6 +450,7 @@ class GazeboEnv(gym.Env):
                     self.pause()
                 except (rospy.ServiceException) as e:
                     print ("/gazebo/pause_physics service call failed")
+                    self.handleGazeboFailure()
                 #print("Pause done")
                 
         def unpausePhysics(self):
@@ -447,6 +460,7 @@ class GazeboEnv(gym.Env):
                     self.unpause()
                 except (rospy.ServiceException) as e:
                     print ("/gazebo/unpause_physics service call failed")
+                    self.handleGazeboFailure()
                 #print("Unpause done")
                     
         def resetSimulation(self):
@@ -456,6 +470,7 @@ class GazeboEnv(gym.Env):
                     self.reset_proxy()
                 except (rospy.ServiceException) as e:
                     print ("/gazebo/reset_simulation service call failed")
+                    self.handleGazeboFailure()
                 #print("Reset done")
     
         def _close(self):
