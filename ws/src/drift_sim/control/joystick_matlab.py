@@ -5,12 +5,12 @@ import drift_gym
 from sensor_msgs.msg import Joy
 import subprocess
 from std_msgs.msg import Float64MultiArray
-import numpy as np
+
 
 MIN_THROTTLE = 1500
-DRIFT_THROTTLE = 1770
+DRIFT_THROTTLE = 1750
 MAX_THROTTLE = 2000
-MAX_SERVO = 0.80 #0.366519
+MAX_SERVO = 0.366519 #0.366519
 env = None
 
 global drifting
@@ -54,50 +54,11 @@ def callback(data):
         print(state)
 
 
-def callback2(data, args):
-    servo = data.data[0]
-    throttle = data.data[1]
-    rospy.loginfo(rospy.get_caller_id() + ' Action: %s', data.data)
-
-    env = args[0]
-    pub = args[1]
-    allRewards = args[2]
-
-    if (servo == -1000):
-        calc(allRewards)
-        allRewards = []
-        rospy.loginfo('Resetting Env . . . \n\n')
-        env.reset()
-        return
-
-    state, reward, done, _ = env.step((throttle, servo))
-    stateArray = Float64MultiArray()
-    state = state.tolist()
-    state.append(throttle)
-    state.append(servo)
-    stateArray.data = state
-    pub.publish(stateArray)
-    allRewards.append(reward)
-
-def calc(rewards):
-    r = np.array(rewards)
-    print("Mean: ")
-    print(np.mean(r))
-    print("Std dev: ")
-    print(np.std(r))
-
 if __name__=="__main__":
-    env = gym.make('DriftCarGazeboContinuousBodyFrame4WD-v1')
-    env.reset()
-    env.render()
-
     subprocess.Popen(["rosrun", "joy", "joy_node"])
     rospy.Subscriber('/joy', Joy, callback, queue_size=1)
     global pub
     pub = rospy.Publisher('drift_car/state', Float64MultiArray, queue_size=1)
-
-    allRewards = []
-    rospy.Subscriber('drift_car/action', Float64MultiArray, callback2, (env, pub, allRewards))
 
     print("========================================")
     print("Joystick Controller for Gazebo Drift Car")

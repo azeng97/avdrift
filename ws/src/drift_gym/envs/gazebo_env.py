@@ -79,13 +79,14 @@ class GazeboEnv(gym.Env):
                 self.observation_space = spaces.Box(-high, high)   
                 
                 self._seed()
-                
+
+                self.update_rate = 0.05
+
                 self.previous_action = -1
                 self.previous_imu = {}
                 self.previous_pos = self.getPosData()
 
-                self.penalty = 0
-
+                self.penalty = 1
                 # Learning Parameters
                 self.radius = 1
                 self.throttle = 1750
@@ -116,6 +117,7 @@ class GazeboEnv(gym.Env):
                 
                 self.unpausePhysics()
 
+
                 if isinstance(action, tuple):
                         self.applyThrottle(action[0])
                         action = action[1]
@@ -127,8 +129,11 @@ class GazeboEnv(gym.Env):
                 else:
                         self.applySteering(self.radianMappings[action])
 
+
                 posData = self.getPosData()
                 #imuData = self.getIMUData()                
+
+
 
                 self.pausePhysics()
 
@@ -403,8 +408,9 @@ class GazeboEnv(gym.Env):
         def getPosData(self):
                 #print("Fetching Pos Data")
                 failureCount = 0
-                posData = None        
-                while posData is None:
+                posData = None
+                time = rospy.Time.now()
+                while posData is None or rospy.Time.now() - time < rospy.Duration(self.update_rate):
                         try:
                                 posData = rospy.wait_for_message('/gazebo/model_states', ModelStates, timeout=1)
                         except Exception as e:

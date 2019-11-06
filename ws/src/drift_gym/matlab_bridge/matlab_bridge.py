@@ -26,7 +26,10 @@ def callback(data, args):
 
     state, reward, done, _ = env.step((throttle, servo))
     stateArray = Float64MultiArray()
-    stateArray.data = state.tolist()
+    state = state.tolist()
+    state.append(throttle)
+    state.append(servo)
+    stateArray.data = state
     pub.publish(stateArray)
     allRewards.append(reward)
 
