@@ -482,9 +482,9 @@ void loop_imu()
     imu.angular_velocity.x = gx;
     imu.angular_velocity.y = gy;
     imu.angular_velocity.z = gz;
-    imu.linear_acceleration.x = ax;
-    imu.linear_acceleration.y = ay;
-    imu.linear_acceleration.z = az;
+    imu.linear_acceleration.x = ax*9.81;
+    imu.linear_acceleration.y = ay*9.81;
+    imu.linear_acceleration.z = az*9.81;
     imu.header.stamp = nh.now();
     imu.header.frame_id = "drift_car/imu_link";
     pub_imu.publish(&imu);

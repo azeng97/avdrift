@@ -1,4 +1,5 @@
 <launch>
+
     <rosparam command="load" file="$(find barc)/params/beacon_fusion.yaml" />
   <node pkg="robot_localization" type="ekf_localization_node" name="ekf_se_odom" clear_params="true">
 
