@@ -60,27 +60,21 @@ class GazeboEnv(gym.Env):
                 
                 #Reward related
                 self.reward_range = (-np.inf, np.inf)
-
-                #Action related
-                self.continuous = continuous
-                if continuous:
-                        high = np.array([0.80])
-                        self.action_space = spaces.Box(-high, high)
-                else:
-                        minDegrees = 45
-                        maxDegrees = 135
-                        self.degreeMappings = range(minDegrees, maxDegrees+1, 10)
-                        self.radianMappings = [math.radians(x-90) for x in self.degreeMappings]
-                        self.action_space = spaces.Discrete(len(self.degreeMappings))
                 
-                #State related
+                self.learn_throttle = True
+                high = np.array([0.85])
+                if self.learn_throttle:
+                    self.action_space = spaces.Box(np.array([1700, -0.85]), np.array([1850, 0.85]))
+                else:
+                    self.action_space = spaces.Box(-high, high)
+
                 self.state_info = state_info
-                high = np.ones(len(self.state_info)) * np.finfo(np.float32).max  
+                high = np.ones(len(self.state_info)) * 100 
                 self.observation_space = spaces.Box(-high, high)   
                 
                 self._seed()
 
-                self.update_rate = 0.05
+                self.update_rate = 0.1
 
                 self.previous_action = -1
                 self.previous_imu = {}
@@ -116,18 +110,16 @@ class GazeboEnv(gym.Env):
                 #TODO can look into mirroring joints to make sure the wheels spin and turn tgt                
                 
                 self.unpausePhysics()
-
-
+                print(action)
+                if isinstance(action, np.ndarray):
+                    action = (action[0], action[1])
                 if isinstance(action, tuple):
                         self.applyThrottle(action[0])
                         action = action[1]
                 else:
                         self.applyThrottle(self.throttle)
                 
-                if self.continuous:
-                        self.applySteering(action)
-                else:
-                        self.applySteering(self.radianMappings[action])
+                self.applySteering(action)
 
 
                 posData = self.getPosData()
@@ -155,6 +147,7 @@ class GazeboEnv(gym.Env):
                 #self.previous_imu = imuData
                 self.previous_pos = posData     
                 self.previous_action = action
+                print(state)
                 return state, reward, done, {}
 
         def getState(self, posData):
@@ -221,7 +214,7 @@ class GazeboEnv(gym.Env):
         def getRewardExponential(self, state):
                 # desiredTangentialSpeed = 5          # Tangential speed with respect to car body.
                 # desiredNormalSpeed  = 0           # Perfect circular motion
-                desiredAngularVel = -4
+                desiredAngularVel = -3
                 desiredForwardVel = 0.5
                 desiredSideVel = 1.5
                 desiredAccel = math.sqrt(desiredForwardVel**2 + desiredForwardVel**2)*desiredAngularVel

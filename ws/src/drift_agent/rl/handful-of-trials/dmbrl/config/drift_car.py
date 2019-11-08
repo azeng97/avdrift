@@ -13,12 +13,12 @@ import dmbrl.env
 
 
 class DriftCarConfigModule:
-    ENV_NAME = "DriftCarGazeboContinuousBodyFrame4WD-v0"
+    ENV_NAME = "DriftCarGazeboContinuousBodyFrame4WD-v1"
     TASK_HORIZON = 300
     NTRAIN_ITERS = 50
-    NROLLOUTS_PER_ITER = 1
+    NROLLOUTS_PER_ITER = 5
     PLAN_HOR = 25
-    MODEL_IN, MODEL_OUT = 4, 3
+    MODEL_IN, MODEL_OUT = 5, 3
     GP_NINDUCING_POINTS = 200
 
     def __init__(self):

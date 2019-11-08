@@ -3,7 +3,7 @@
                 <arg name="world_name" value="$(find drift_sim)/worlds/drift_car.world"/>
                 <arg name="gui" value="false"/>
         </include>
-        <param name="robot_description" command="$(find xacro)/xacro --inorder $(find drift_sim)/urdf/drift_car_og.urdf.xacro" />
+        <param name="robot_description" command="$(find xacro)/xacro --inorder $(find drift_sim)/urdf/drift_car.urdf.xacro" />
         <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -x 0 -y 0 -z 1 -model drift_car" />
 <!--          <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">-->
 <!--                <param name="publish_frequency" type="double" value="50.0" />-->
