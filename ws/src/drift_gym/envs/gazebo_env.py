@@ -410,15 +410,18 @@ class GazeboEnv(gym.Env):
                 failureCount = 0
                 posData = None
                 time = rospy.Time.now()
-                while posData is None or rospy.Time.now() - time < rospy.Duration(self.update_rate):
-                        try:
-                                posData = rospy.wait_for_message('/gazebo/model_states', ModelStates, timeout=1)
-                        except Exception as e:
-                                failureCount += 1
-                                if failureCount % 10 == 0:
-                                        self.handleGazeboFailure()          
-                                print(e)
-                                pass
+                try:
+                        while posData is None or rospy.Time.now() - time < rospy.Duration(self.update_rate):
+                                try:
+                                        posData = rospy.wait_for_message('/gazebo/model_states', ModelStates, timeout=1)
+                                except Exception as e:
+                                        failureCount += 1
+                                        if failureCount % 10 == 0:
+                                                self.handleGazeboFailure()
+                                        print(e)
+                                        pass
+                except Exception as e:
+                        self.handleGazeboFailure()
                 #print("Fetched Pos Data")
                 return posData
         
