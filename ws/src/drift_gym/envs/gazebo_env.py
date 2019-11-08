@@ -64,7 +64,7 @@ class GazeboEnv(gym.Env):
                 #Action related
                 self.continuous = continuous
                 if continuous:
-                        high = np.array([0.80])
+                        high = np.array([0.85])
                         self.action_space = spaces.Box(-high, high)
                 else:
                         minDegrees = 45
@@ -80,7 +80,7 @@ class GazeboEnv(gym.Env):
                 
                 self._seed()
 
-                self.update_rate = 0.05
+                self.update_rate = 0.1
 
                 self.previous_action = -1
                 self.previous_imu = {}
@@ -221,9 +221,9 @@ class GazeboEnv(gym.Env):
         def getRewardExponential(self, state):
                 # desiredTangentialSpeed = 5          # Tangential speed with respect to car body.
                 # desiredNormalSpeed  = 0           # Perfect circular motion
-                desiredAngularVel = -4
+                desiredAngularVel = -3.5
                 desiredForwardVel = 0.5
-                desiredSideVel = 1.5
+                desiredSideVel = 2.0
                 desiredAccel = math.sqrt(desiredForwardVel**2 + desiredForwardVel**2)*desiredAngularVel
                 # velx = posData.twist[1].linear.x
                 # vely = posData.twist[1].linear.y
