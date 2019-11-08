@@ -114,7 +114,7 @@ class GazeboEnv(gym.Env):
 
         def _step(self, action):
                 #TODO can look into mirroring joints to make sure the wheels spin and turn tgt                
-                
+                time = rospy.Time.now()
                 self.unpausePhysics()
 
 
@@ -129,6 +129,8 @@ class GazeboEnv(gym.Env):
                 else:
                         self.applySteering(self.radianMappings[action])
 
+                while rospy.Time.now()-time < rospy.Duration(self.update_rate):
+                        continue
 
                 posData = self.getPosData()
                 #imuData = self.getIMUData()                
@@ -409,19 +411,16 @@ class GazeboEnv(gym.Env):
                 #print("Fetching Pos Data")
                 failureCount = 0
                 posData = None
-                time = rospy.Time.now()
-                try:
-                        while posData is None or rospy.Time.now() - time < rospy.Duration(self.update_rate):
-                                try:
-                                        posData = rospy.wait_for_message('/gazebo/model_states', ModelStates, timeout=1)
-                                except Exception as e:
-                                        failureCount += 1
-                                        if failureCount % 10 == 0:
-                                                self.handleGazeboFailure()
-                                        print(e)
-                                        pass
-                except Exception as e:
-                        self.handleGazeboFailure()
+
+                while posData is None:
+                        try:
+                                posData = rospy.wait_for_message('/gazebo/model_states', ModelStates, timeout=1)
+                        except Exception as e:
+                                failureCount += 1
+                                if failureCount % 10 == 0:
+                                        self.handleGazeboFailure()
+                                print(e)
+                                pass
                 #print("Fetched Pos Data")
                 return posData
         
