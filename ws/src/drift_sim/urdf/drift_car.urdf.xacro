@@ -303,7 +303,7 @@ limitations under the License.
 
   <joint name="imu_joint" type="fixed">
 		<axis xyz="1 0 0"/>
-		<origin xyz="0.16 0.025 0.08" rpy="0 0 0"/>
+		<origin xyz="0.16 0.025 0.08" rpy="0 0 -${degrees_90}"/>
 		<parent link="base_link"/>
 		<child link="imu_link"/>
   </joint>
