@@ -342,9 +342,9 @@ void loop_imu()
     mRes = 10.*1229./4096.; // Conversion from 1229 microTesla full scale (4096) to 12.29 Gauss full scale
     // So far, magnetometer bias is calculated and subtracted here manually, should construct an algorithm to do it automatically
     // like the gyro and accelerometer biases
-    magbias[0] = 163.61;   // User environmental x-axis correction in milliGauss
-    magbias[1] = -186.36;  // User environmental y-axis correction in milliGauss
-    magbias[2] = -127.99; // User environmental z-axis correction in milliGauss
+    magbias[0] = 111.39;   // User environmental x-axis correction in milliGauss
+    magbias[1] = -221.52;  // User environmental y-axis correction in milliGauss
+    magbias[2] = 362.03; // User environmental z-axis correction in milliGauss
   
     // Calculate the magnetometer values in milliGauss
     // Include factory calibration per data sheet and user environmental corrections
@@ -444,7 +444,7 @@ void loop_imu()
     roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
     pitch *= 180.0f / PI;
     yaw   *= 180.0f / PI; 
-    yaw   -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
+    // yaw   -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
     roll  *= 180.0f / PI;
 
     if(SerialDebug) {
