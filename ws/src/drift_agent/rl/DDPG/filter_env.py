@@ -68,7 +68,7 @@ def makeFilteredEnv(env):
     def step(self,action):
 
       ac_f = np.clip(self.filter_action(action),self.action_space.low,self.action_space.high)
-
+      print(action, ac_f)
       obs, reward, term, info = env_type.step(self,ac_f) # super function
 
       obs_f = self.filter_observation(obs)

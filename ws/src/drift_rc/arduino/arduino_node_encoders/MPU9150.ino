@@ -475,15 +475,15 @@ void loop_imu()
     blinkOn = ~blinkOn;
     count = millis();  
     }
-    imu.orientation.x = q[1];
-    imu.orientation.y = q[2];
+    imu.orientation.x = q[2];
+    imu.orientation.y = -q[1];
     imu.orientation.z = q[3];
     imu.orientation.w = q[0];
-    imu.angular_velocity.x = gx;
-    imu.angular_velocity.y = gy;
+    imu.angular_velocity.x = gy;
+    imu.angular_velocity.y = -gx;
     imu.angular_velocity.z = gz;
-    imu.linear_acceleration.x = ax*9.81;
-    imu.linear_acceleration.y = ay*9.81;
+    imu.linear_acceleration.x = ay*9.81;
+    imu.linear_acceleration.y = -ax*9.81;
     imu.linear_acceleration.z = az*9.81;
     imu.header.stamp = nh.now();
     imu.header.frame_id = "drift_car/imu_link";
