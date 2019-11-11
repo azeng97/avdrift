@@ -475,8 +475,8 @@ void loop_imu()
     blinkOn = ~blinkOn;
     count = millis();  
     }
-    imu.orientation.x = q[2];
-    imu.orientation.y = -q[1];
+    imu.orientation.x = q[1];
+    imu.orientation.y = q[2];
     imu.orientation.z = q[3];
     imu.orientation.w = q[0];
     imu.angular_velocity.x = gy;

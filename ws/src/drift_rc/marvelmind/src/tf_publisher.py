@@ -12,7 +12,7 @@ def handle_pose(hedge, imu):
     br = tf2_ros.TransformBroadcaster()
     t = TransformStamped()
     t.header.stamp = rospy.Time.now()
-    t.header.frame_id = "map"
+    t.header.frame_id = "odom"
     t.child_frame_id = "drift_car/base_link"
     t.transform.translation.x = hedge.pose.pose.position.x - init_pos.pose.pose.position.x
     t.transform.translation.y = hedge.pose.pose.position.y - init_pos.pose.pose.position.y
