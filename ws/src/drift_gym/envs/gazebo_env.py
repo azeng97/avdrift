@@ -62,9 +62,12 @@ class GazeboEnv(gym.Env):
                 self.reward_range = (-np.inf, np.inf)
                 
                 self.learn_throttle = True
-                high = np.array([0.85])
+                self.max_steer = 0.85
+                high = np.array([self.max_steer])
                 if self.learn_throttle:
-                    self.action_space = spaces.Box(np.array([1700, -0.85]), np.array([1850, 0.85]))
+                    self.min_throttle = 1700
+                    self.max_throttle = 1850
+                    self.action_space = spaces.Box(np.array([self.min_throttle, -self.max_steer]), np.array([self.max_throttle, self.max_steer]))
                 else:
                     self.action_space = spaces.Box(-high, high)
 
@@ -83,7 +86,7 @@ class GazeboEnv(gym.Env):
                 self.penalty = 1
                 # Learning Parameters
                 self.radius = 1
-                self.throttle = 1750
+                self.throttle = 1770
                 self.maxDeviationFromCenter = 6
                 self.evaluation = False
                 if self.evaluation:
@@ -96,6 +99,7 @@ class GazeboEnv(gym.Env):
                 return [seed] 
         
         def applyThrottle(self, throtle):
+                throtle = np.clip(throtle, self.min_throttle, self.max_throttle)
                 self.throtle1.publish(throtle)
                 self.throtle2.publish(throtle)
                 if self.four_wheel_drive:
@@ -103,6 +107,7 @@ class GazeboEnv(gym.Env):
                         self.throtle4.publish(throtle)
 
         def applySteering(self, steering):
+                steering = np.clip(steering, -self.max_steer, self.max_steer)
                 self.steer1.publish(steering)
                 self.steer2.publish(steering)
 
