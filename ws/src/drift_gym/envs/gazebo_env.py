@@ -113,7 +113,8 @@ class GazeboEnv(gym.Env):
 
         def _step(self, action):
                 #TODO can look into mirroring joints to make sure the wheels spin and turn tgt                
-                
+
+                time = rospy.Time.now()
                 self.unpausePhysics()
                 print(action)
                 if isinstance(action, np.ndarray):
