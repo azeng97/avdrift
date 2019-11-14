@@ -126,6 +126,8 @@ class GazeboEnv(gym.Env):
                 
                 self.applySteering(action)
 
+                while rospy.Time.now()-time < rospy.Duration(self.update_rate):
+                        continue
 
                 posData = self.getPosData()
                 #imuData = self.getIMUData()                
@@ -407,8 +409,7 @@ class GazeboEnv(gym.Env):
                 #print("Fetching Pos Data")
                 failureCount = 0
                 posData = None
-                time = rospy.Time.now()
-                while posData is None or rospy.Time.now() - time < rospy.Duration(self.update_rate):
+                while posData is None:
                         try:
                                 posData = rospy.wait_for_message('/gazebo/model_states', ModelStates, timeout=1)
                         except Exception as e:
