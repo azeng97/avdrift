@@ -83,7 +83,7 @@ class GazeboEnv(gym.Env):
                 self.previous_imu = {}
                 self.previous_pos = self.getPosData()
 
-                self.penalty = 1
+                self.penalty = 0
                 # Learning Parameters
                 self.radius = 1
                 self.throttle = 1770
