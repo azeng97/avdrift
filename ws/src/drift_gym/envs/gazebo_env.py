@@ -65,7 +65,7 @@ class GazeboEnv(gym.Env):
                 self.max_steer = 0.85
                 high = np.array([self.max_steer])
                 if self.learn_throttle:
-                    self.min_throttle = 1700
+                    self.min_throttle = 1750
                     self.max_throttle = 1850
                     self.action_space = spaces.Box(np.array([self.min_throttle, -self.max_steer]), np.array([self.max_throttle, self.max_steer]))
                 else:
