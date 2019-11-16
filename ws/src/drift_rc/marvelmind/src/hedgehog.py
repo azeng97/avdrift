@@ -19,7 +19,7 @@ def main():
     rospy.Subscriber("hedge_pos_ang", hedge_pos_ang, pos_callback)
     hedge_pose_pub = rospy.Publisher("hedge_pose", PoseWithCovarianceStamped, queue_size=10)
     out_pose = PoseWithCovarianceStamped()
-    out_pose.header.frame_id = "drift_car/hedge_link"
+    out_pose.header.frame_id = "beacon_map"
     rospy.spin()
 
 def pos_callback(data):

@@ -343,14 +343,14 @@ void loop_imu()
     // So far, magnetometer bias is calculated and subtracted here manually, should construct an algorithm to do it automatically
     // like the gyro and accelerometer biases
     
-//    magbias[0] = 111.39;   // User environmental x-axis correction in milliGauss
-//    magbias[1] = -221.52;  // User environmental y-axis correction in milliGauss
-//    magbias[2] = 362.03; // User environmental z-axis correction in milliGauss
+    magbias[0] = 111.39;   // User environmental x-axis correction in milliGauss
+    magbias[1] = -221.52;  // User environmental y-axis correction in milliGauss
+    magbias[2] = 362.03; // User environmental z-axis correction in milliGauss
 
 
-    magbias[0] = 139.24;   // User environmental x-axis correction in milliGauss
-    magbias[1] = -101.97;  // User environmental y-axis correction in milliGauss
-    magbias[2] = 190.16; // User environmental z-axis correction in milliGauss
+//    magbias[0] = 139.24;   // User environmental x-axis correction in milliGauss
+//    magbias[1] = -101.97;  // User environmental y-axis correction in milliGauss
+//    magbias[2] = 190.16; // User environmental z-axis correction in milliGauss
     // Calculate the magnetometer values in milliGauss
     // Include factory calibration per data sheet and user environmental corrections
     mx = (float)magCount[0]*mRes*magCalibration[0] - magbias[0];  // get actual magnetometer value, this depends on scale being set
@@ -484,11 +484,11 @@ void loop_imu()
     imu.orientation.y = q[2];
     imu.orientation.z = q[3];
     imu.orientation.w = q[0];
-    imu.angular_velocity.x = gy;
-    imu.angular_velocity.y = -gx;
+    imu.angular_velocity.x = gx;
+    imu.angular_velocity.y = gy;
     imu.angular_velocity.z = gz;
-    imu.linear_acceleration.x = ay*9.81;
-    imu.linear_acceleration.y = -ax*9.81;
+    imu.linear_acceleration.x = ax*9.81;
+    imu.linear_acceleration.y = ay*9.81;
     imu.linear_acceleration.z = az*9.81;
     imu.header.stamp = nh.now();
     imu.header.frame_id = "drift_car/imu_link";

@@ -9,7 +9,7 @@ from sensor_msgs.msg import Imu
 from tf.transformations import quaternion_from_euler
 
 
-def handle_pose(hedge, imu):
+def handle_pose():
     br = tf2_ros.StaticTransformBroadcaster()
     t = TransformStamped()
     t.header.stamp = rospy.Time.now()
