@@ -61,12 +61,12 @@ class GazeboEnv(gym.Env):
                 #Reward related
                 self.reward_range = (-np.inf, np.inf)
                 
-                self.learn_throttle = True
+                self.learn_throttle = False
+                self.min_throttle = 1700
+                self.max_throttle = 1850
                 self.max_steer = 0.85
                 high = np.array([self.max_steer])
                 if self.learn_throttle:
-                    self.min_throttle = 1700
-                    self.max_throttle = 1850
                     self.action_space = spaces.Box(np.array([self.min_throttle, -self.max_steer]), np.array([self.max_throttle, self.max_steer]))
                 else:
                     self.action_space = spaces.Box(-high, high)
@@ -86,7 +86,7 @@ class GazeboEnv(gym.Env):
                 self.penalty = 1
                 # Learning Parameters
                 self.radius = 1
-                self.throttle = 1770
+                self.throttle = 1750
                 self.maxDeviationFromCenter = 6
                 self.evaluation = False
                 if self.evaluation:
@@ -118,7 +118,10 @@ class GazeboEnv(gym.Env):
                 self.unpausePhysics()
                 print(action)
                 if isinstance(action, np.ndarray):
-                    action = (action[0], action[1])
+                    if len(action) == 2:
+                        action = (action[0], action[1])
+                    else:
+                        action = action[0]
                 if isinstance(action, tuple):
                         self.applyThrottle(action[0])
                         action = action[1]

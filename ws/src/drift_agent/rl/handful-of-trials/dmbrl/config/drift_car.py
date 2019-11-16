@@ -14,11 +14,11 @@ import dmbrl.env
 
 class DriftCarConfigModule:
     ENV_NAME = "DriftCarGazeboContinuousBodyFrame4WD-v1"
-    TASK_HORIZON = 300
-    NTRAIN_ITERS = 50
-    NROLLOUTS_PER_ITER = 5
-    PLAN_HOR = 25
-    MODEL_IN, MODEL_OUT = 5, 3
+    TASK_HORIZON = 150
+    NTRAIN_ITERS = 10
+    NROLLOUTS_PER_ITER = 10
+    PLAN_HOR = 50
+    MODEL_IN, MODEL_OUT = 4, 3
     GP_NINDUCING_POINTS = 200
 
     def __init__(self):
@@ -79,9 +79,9 @@ class DriftCarConfigModule:
             model_dir=model_init_cfg.get("model_dir", None)
         ))
         if not model_init_cfg.get("load_model", False):
-            model.add(FC(500, input_dim=self.MODEL_IN, activation='swish', weight_decay=0.0001))
-            model.add(FC(500, activation='swish', weight_decay=0.00025))
-            model.add(FC(500, activation='swish', weight_decay=0.00025))
+            model.add(FC(200, input_dim=self.MODEL_IN, activation='swish', weight_decay=0.0001))
+            model.add(FC(200, activation='swish', weight_decay=0.00025))
+            model.add(FC(200, activation='swish', weight_decay=0.00025))
             model.add(FC(self.MODEL_OUT, weight_decay=0.0005))
         model.finalize(tf.train.AdamOptimizer, {"learning_rate": 0.001})
         return model

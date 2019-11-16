@@ -15,7 +15,7 @@ from dmbrl.misc.MBExp import MBExperiment
 from dmbrl.controllers.MPC import MPC
 from dmbrl.config import create_config
 
-import gym_drift_car
+import drift_gym
 
 def main(env, ctrl_type, ctrl_args, overrides, model_dir, logdir):
     ctrl_args = DotMap(**{key: val for (key, val) in ctrl_args})
