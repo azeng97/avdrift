@@ -13,7 +13,7 @@ def handle_pose():
     br = tf2_ros.StaticTransformBroadcaster()
     t = TransformStamped()
     t.header.stamp = rospy.Time.now()
-    t.header.frame_id = "odom"
+    t.header.frame_id = "map"
     t.child_frame_id = "beacon_map"
     t.transform.translation.x = -init_pos.pose.pose.position.x
     t.transform.translation.y = -init_pos.pose.pose.position.y
