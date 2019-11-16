@@ -60,6 +60,21 @@ class GazeboEnv(gym.Env):
                 
                 #Reward related
                 self.reward_range = (-np.inf, np.inf)
+<<<<<<< HEAD
+=======
+
+                #Action related
+                self.continuous = continuous
+                if continuous:
+                        high = np.array([0.85])
+                        self.action_space = spaces.Box(-high, high)
+                else:
+                        minDegrees = 45
+                        maxDegrees = 135
+                        self.degreeMappings = range(minDegrees, maxDegrees+1, 10)
+                        self.radianMappings = [math.radians(x-90) for x in self.degreeMappings]
+                        self.action_space = spaces.Discrete(len(self.degreeMappings))
+>>>>>>> 670d64a6b4408e411ef03bb05c20677f7a10de62
                 
                 self.learn_throttle = False
                 self.min_throttle = 1700
@@ -113,6 +128,12 @@ class GazeboEnv(gym.Env):
 
         def _step(self, action):
                 #TODO can look into mirroring joints to make sure the wheels spin and turn tgt                
+<<<<<<< HEAD
+=======
+                time = rospy.Time.now()
+                self.unpausePhysics()
+
+>>>>>>> 670d64a6b4408e411ef03bb05c20677f7a10de62
 
                 time = rospy.Time.now()
                 self.unpausePhysics()
@@ -225,9 +246,13 @@ class GazeboEnv(gym.Env):
         def getRewardExponential(self, state):
                 # desiredTangentialSpeed = 5          # Tangential speed with respect to car body.
                 # desiredNormalSpeed  = 0           # Perfect circular motion
+<<<<<<< HEAD
                 desiredAngularVel = -3
+=======
+                desiredAngularVel = -3.5
+>>>>>>> 670d64a6b4408e411ef03bb05c20677f7a10de62
                 desiredForwardVel = 0.5
-                desiredSideVel = 1.5
+                desiredSideVel = 2.0
                 desiredAccel = math.sqrt(desiredForwardVel**2 + desiredForwardVel**2)*desiredAngularVel
                 # velx = posData.twist[1].linear.x
                 # vely = posData.twist[1].linear.y
@@ -413,13 +438,17 @@ class GazeboEnv(gym.Env):
                 #print("Fetching Pos Data")
                 failureCount = 0
                 posData = None
+<<<<<<< HEAD
+=======
+
+>>>>>>> 670d64a6b4408e411ef03bb05c20677f7a10de62
                 while posData is None:
                         try:
                                 posData = rospy.wait_for_message('/gazebo/model_states', ModelStates, timeout=1)
                         except Exception as e:
                                 failureCount += 1
                                 if failureCount % 10 == 0:
-                                        self.handleGazeboFailure()          
+                                        self.handleGazeboFailure()
                                 print(e)
                                 pass
                 #print("Fetched Pos Data")

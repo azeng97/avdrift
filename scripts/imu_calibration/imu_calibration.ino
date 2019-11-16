@@ -25,9 +25,6 @@
  We are also using the 400 kHz fast I2C mode by setting the TWI_FREQ  to 400000L /twi.h utility file.
  */
 #include "Wire.h"  
-#include <ros.h>
-#include <ros/time.h>
-#include <sensor_msgs/Imu.h>
 // Define registers per MPU6050, Register Map and Descriptions, Rev 4.2, 08/19/2013 6 DOF Motion sensor fusion device
 // Invensense Inc., www.invensense.com
 // See also MPU-9150 Register Map and Descriptions, Revision 4.0, RM-MPU-9150A-00, 9/12/2012 for registers not listed in 
@@ -38,12 +35,12 @@
 #define INFO             0x01
 #define AK8975A_ST1      0x02  // data ready status bit 0
 #define AK8975A_ADDRESS  0x0C
-#define AK8975A_XOUT_L	 0x03  // data
-#define AK8975A_XOUT_H	 0x04
-#define AK8975A_YOUT_L	 0x05
-#define AK8975A_YOUT_H	 0x06
-#define AK8975A_ZOUT_L	 0x07
-#define AK8975A_ZOUT_H	 0x08
+#define AK8975A_XOUT_L   0x03  // data
+#define AK8975A_XOUT_H   0x04
+#define AK8975A_YOUT_L   0x05
+#define AK8975A_YOUT_H   0x06
+#define AK8975A_ZOUT_L   0x07
+#define AK8975A_ZOUT_H   0x08
 #define AK8975A_ST2      0x09  // Data overflow bit 3 and data read error status bit 2
 #define AK8975A_CNTL     0x0A  // Power down (0000), single-measurement (0001), self-test (1000) and Fuse ROM (1111) modes on bits 3:0
 #define AK8975A_ASTC     0x0C  // Self test control
@@ -177,7 +174,7 @@
 #endif  
 
 #define AHRS  true          // set to false for basic data read
-#define SerialDebug false  // set to true to print serial output for debugging
+#define SerialDebug true  // set to true to print serial output for debugging
 
 // Set initial input parameters
 enum Ascale {
@@ -244,19 +241,12 @@ float ax, ay, az, gx, gy, gz, mx, my, mz; // variables to hold latest sensor dat
 float q[4] = {1.0f, 0.0f, 0.0f, 0.0f};    // vector to hold quaternion
 float eInt[3] = {0.0f, 0.0f, 0.0f};       // vector to hold integral error for Mahony method
 
-// ros global variables
-sensor_msgs::Imu imu;
-// ros::NodeHandle nh;
-ros::Publisher pub_imu("imu", &imu);
 
 
-void setup_imu()
+void setup()
 {
   Wire.begin();
   Serial.begin(38400);
-
-  nh.initNode();
-  nh.advertise(pub_imu);
  
   // Set up the interrupt pin, its set as active high, push-pull
   pinMode(intPin, INPUT);
@@ -286,7 +276,7 @@ void setup_imu()
   }
   
   calibrateMPU9150(gyroBias, accelBias); // Calibrate gyro and accelerometers, load biases in bias registers  
-
+  
     
   initMPU9150(); // Inititalize and configure accelerometer and gyroscope
   Serial.println("MPU9150 initialized for active data mode...."); // Initialize device for active mode read of acclerometer, gyroscope, and temperature
@@ -306,7 +296,7 @@ void setup_imu()
 
   
   MagRate = 10; // set magnetometer read rate in Hz; 10 to 100 (max) Hz are reasonable values
-
+  // magcalMPU9150();
   }
   else
   {
@@ -316,7 +306,7 @@ void setup_imu()
   }
 }
 
-void loop_imu()
+void loop()
 {  
     // If intPin goes high or data ready status is TRUE, all data registers have new data
     if (readByte(MPU9150_ADDRESS, INT_STATUS) & 0x01) {  // On interrupt, check if data ready interrupt
@@ -342,22 +332,10 @@ void loop_imu()
     mRes = 10.*1229./4096.; // Conversion from 1229 microTesla full scale (4096) to 12.29 Gauss full scale
     // So far, magnetometer bias is calculated and subtracted here manually, should construct an algorithm to do it automatically
     // like the gyro and accelerometer biases
-<<<<<<< HEAD
-    
-    magbias[0] = 111.39;   // User environmental x-axis correction in milliGauss
-    magbias[1] = -221.52;  // User environmental y-axis correction in milliGauss
-    magbias[2] = 362.03; // User environmental z-axis correction in milliGauss
-
-
-//    magbias[0] = 139.24;   // User environmental x-axis correction in milliGauss
-//    magbias[1] = -101.97;  // User environmental y-axis correction in milliGauss
-//    magbias[2] = 190.16; // User environmental z-axis correction in milliGauss
-=======
     magbias[0] = 111.39;   // User environmental x-axis correction in milliGauss
     magbias[1] = -221.52;  // User environmental y-axis correction in milliGauss
     magbias[2] = 362.03; // User environmental z-axis correction in milliGauss
   
->>>>>>> 670d64a6b4408e411ef03bb05c20677f7a10de62
     // Calculate the magnetometer values in milliGauss
     // Include factory calibration per data sheet and user environmental corrections
     mx = (float)magCount[0]*mRes*magCalibration[0] - magbias[0];  // get actual magnetometer value, this depends on scale being set
@@ -383,7 +361,7 @@ void loop_imu()
   // in the LSM9DS0 sensor. This rotation can be modified to allow any convenient orientation convention.
   // This is ok by aircraft orientation standards!  
   // Pass gyro rate as rad/s
-   MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f,  my,  mx, mz);
+   MadgwickQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f,  my,  mx, -mz);
 // MahonyQuaternionUpdate(ax, ay, az, gx*PI/180.0f, gy*PI/180.0f, gz*PI/180.0f, my, mx, mz);
 
 
@@ -456,7 +434,7 @@ void loop_imu()
     roll  = atan2(2.0f * (q[0] * q[1] + q[2] * q[3]), q[0] * q[0] - q[1] * q[1] - q[2] * q[2] + q[3] * q[3]);
     pitch *= 180.0f / PI;
     yaw   *= 180.0f / PI; 
-    // yaw   -= 13.8; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
+    // yaw   += 12.61; // Declination at Danville, California is 13 degrees 48 minutes and 47 seconds on 2014-04-04
     roll  *= 180.0f / PI;
 
     if(SerialDebug) {
@@ -487,20 +465,6 @@ void loop_imu()
     blinkOn = ~blinkOn;
     count = millis();  
     }
-    imu.orientation.x = q[1];
-    imu.orientation.y = q[2];
-    imu.orientation.z = q[3];
-    imu.orientation.w = q[0];
-    imu.angular_velocity.x = gy;
-    imu.angular_velocity.y = -gx;
-    imu.angular_velocity.z = gz;
-    imu.linear_acceleration.x = ay*9.81;
-    imu.linear_acceleration.y = -ax*9.81;
-    imu.linear_acceleration.z = az*9.81;
-    imu.header.stamp = nh.now();
-    imu.header.frame_id = "drift_car/imu_link";
-    pub_imu.publish(&imu);
-    // nh.spinOnce();
 }
 
 }
@@ -512,8 +476,8 @@ void loop_imu()
 void getGres() {
   switch (Gscale)
   {
- 	// Possible gyro scales (and their register bit settings) are:
-	// 250 DPS (00), 500 DPS (01), 1000 DPS (10), and 2000 DPS  (11). 
+  // Possible gyro scales (and their register bit settings) are:
+  // 250 DPS (00), 500 DPS (01), 1000 DPS (10), and 2000 DPS  (11). 
         // Here's a bit of an algorith to calculate DPS/(ADC tick) based on that 2-bit value:
     case GFS_250DPS:
           gRes = 250.0/32768.0;
@@ -533,8 +497,8 @@ void getGres() {
 void getAres() {
   switch (Ascale)
   {
- 	// Possible accelerometer scales (and their register bit settings) are:
-	// 2 Gs (00), 4 Gs (01), 8 Gs (10), and 16 Gs  (11). 
+  // Possible accelerometer scales (and their register bit settings) are:
+  // 2 Gs (00), 4 Gs (01), 8 Gs (10), and 16 Gs  (11). 
         // Here's a bit of an algorith to calculate DPS/(ADC tick) based on that 2-bit value:
     case AFS_2G:
           aRes = 2.0/32768.0;
@@ -551,6 +515,37 @@ void getAres() {
   }
 }
 
+
+void magcalMPU9150(){
+  uint16_t ii = 0, sample_count = 0;
+  int32_t mag_bias[3] = {0, 0, 0};
+  int16_t mag_max[3] = {0, 0, 0}, mag_min[3] = {0, 0, 0}, mag_temp[3] = {0, 0, 0};
+  Serial.println("Mag Calibration: Wave device in a figure eight until done!");
+  delay(4000);
+  sample_count = 64;
+  mRes = 10.*1229./4096.;
+  for(ii = 0; ii < sample_count; ii++) {
+  readMagData(mag_temp); // Read the mag data
+  for (int jj = 0; jj < 3; jj++) {
+  if(mag_temp[jj] > mag_max[jj]) mag_max[jj] = mag_temp[jj];
+  if(mag_temp[jj] < mag_min[jj]) mag_min[jj] = mag_temp[jj];
+  }
+  delay(135); // at 8 Hz ODR, new mag data is available every 125 ms
+  }
+  Serial.println("mag x min/max:"); Serial.println(mag_max[0]);
+  Serial.println(mag_min[0]);
+  Serial.println("mag y min/max:"); Serial.println(mag_max[1]);
+  Serial.println(mag_min[1]);
+  Serial.println("mag z min/max:"); Serial.println(mag_max[2]);
+  Serial.println(mag_min[2]);
+  mag_bias[0] = (mag_max[0] + mag_min[0])/2; // get average x mag bias in  counts
+  mag_bias[1] = (mag_max[1] + mag_min[1])/2; // get average y mag bias in counts
+  mag_bias[2] = (mag_max[2] + mag_min[2])/2; // get average z mag bias in counts
+  Serial.println((float) mag_bias[0]*mRes*magCalibration[0]);
+  Serial.println((float) mag_bias[1]*mRes*magCalibration[1]);
+  Serial.println((float) mag_bias[2]*mRes*magCalibration[2]);
+  Serial.println("Mag Calibration done!");
+}
 
 void readAccelData(int16_t * destination)
 {
@@ -915,30 +910,30 @@ void MPU6050SelfTest(float * destination) // Should return percent deviation fro
         // Wire.h read and write protocols
         void writeByte(uint8_t address, uint8_t subAddress, uint8_t data)
 {
-	Wire.beginTransmission(address);  // Initialize the Tx buffer
-	Wire.write(subAddress);           // Put slave register address in Tx buffer
-	Wire.write(data);                 // Put data in Tx buffer
-	Wire.endTransmission();           // Send the Tx buffer
+  Wire.beginTransmission(address);  // Initialize the Tx buffer
+  Wire.write(subAddress);           // Put slave register address in Tx buffer
+  Wire.write(data);                 // Put data in Tx buffer
+  Wire.endTransmission();           // Send the Tx buffer
 }
 
         uint8_t readByte(uint8_t address, uint8_t subAddress)
 {
-	uint8_t data; // `data` will store the register data	 
-	Wire.beginTransmission(address);         // Initialize the Tx buffer
-	Wire.write(subAddress);	                 // Put slave register address in Tx buffer
-	Wire.endTransmission(false);             // Send the Tx buffer, but send a restart to keep connection alive
-	Wire.requestFrom(address, (uint8_t) 1);  // Read one byte from slave register address 
-	data = Wire.read();                      // Fill Rx buffer with result
-	return data;                             // Return data read from slave register
+  uint8_t data; // `data` will store the register data   
+  Wire.beginTransmission(address);         // Initialize the Tx buffer
+  Wire.write(subAddress);                  // Put slave register address in Tx buffer
+  Wire.endTransmission(false);             // Send the Tx buffer, but send a restart to keep connection alive
+  Wire.requestFrom(address, (uint8_t) 1);  // Read one byte from slave register address 
+  data = Wire.read();                      // Fill Rx buffer with result
+  return data;                             // Return data read from slave register
 }
 
         void readBytes(uint8_t address, uint8_t subAddress, uint8_t count, uint8_t * dest)
 {  
-	Wire.beginTransmission(address);   // Initialize the Tx buffer
-	Wire.write(subAddress);            // Put slave register address in Tx buffer
-	Wire.endTransmission(false);       // Send the Tx buffer, but send a restart to keep connection alive
-	uint8_t i = 0;
+  Wire.beginTransmission(address);   // Initialize the Tx buffer
+  Wire.write(subAddress);            // Put slave register address in Tx buffer
+  Wire.endTransmission(false);       // Send the Tx buffer, but send a restart to keep connection alive
+  uint8_t i = 0;
         Wire.requestFrom(address, count);  // Read bytes from slave register address 
-	while (Wire.available()) {
+  while (Wire.available()) {
         dest[i++] = Wire.read(); }         // Put read results in the Rx buffer
 }

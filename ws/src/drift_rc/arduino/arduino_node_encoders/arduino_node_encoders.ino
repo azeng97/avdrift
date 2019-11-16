@@ -25,7 +25,7 @@ CAR CLASS DEFINITION (would like to refactor into car.cpp and car.h but can't fi
 **************************************************************************/
 class Car {
   public:
-    void initEncoders();
+//    void initEncoders();
     void initRCInput();
     void initActuators();
     void armActuators();
@@ -36,30 +36,30 @@ class Car {
     // Getters
     uint16_t getRCThrottle();
     uint16_t getRCSteering();
-    int getEncoderFL();
-    int getEncoderFR();
-    int getEncoderBL();
-    int getEncoderBR();
-    float getVelEstFL();
-    float getVelEstFR();
-    float getVelEstBL();
-    float getVelEstBR();
+//    int getEncoderFL();
+//    int getEncoderFR();
+//    int getEncoderBL();
+//    int getEncoderBR();
+//    float getVelEstFL();
+//    float getVelEstFR();
+//    float getVelEstBL();
+//    float getVelEstBR();
 
     // Interrupt service routines
-    void incFR();
-    void incFL();
-    void incBR();
-    void incBL();
+//    void incFR();
+//    void incFL();
+//    void incBR();
+//    void incBL();
     void calcThrottle();
     void calcSteering();
-    void calcVelocityEstimate();
+//    void calcVelocityEstimate();
     void killMotor();
   private:
     // Pin assignments
-    const int ENC_FL_PIN = 3;
-    const int ENC_FR_PIN = 2;
-    const int ENC_BL_PIN = 15;
-    const int ENC_BR_PIN = 14;
+//    const int ENC_FL_PIN = 3;
+//    const int ENC_FR_PIN = 2;
+//    const int ENC_BL_PIN = 15;
+//    const int ENC_BR_PIN = 14;
     const int THROTTLE_PIN = 12;
     const int STEERING_PIN = 50;
     const int MOTOR_PIN = 10;
@@ -107,38 +107,38 @@ class Car {
     // Number of encoder counts on tires
     // count tick on {FL, FR, BL, BR}
     // F = front, B = back, L = left, R = right
-    volatile int FL_count_shared = 0;
-    volatile int FR_count_shared = 0;
-    volatile int BL_count_shared = 0;
-    volatile int BR_count_shared = 0;
-    int FL_count = 0;
-    int FR_count = 0;
-    int BL_count = 0;
-    int BR_count = 0;
-    int FL_count_old = 0;
-    int FR_count_old = 0;
-    int BL_count_old = 0;
-    int BR_count_old = 0;
-    float vel_FL = 0;
-    float vel_FR = 0;
-    float vel_BL = 0;
-    float vel_BR = 0;
+//    volatile int FL_count_shared = 0;
+//    volatile int FR_count_shared = 0;
+//    volatile int BL_count_shared = 0;
+//    volatile int BR_count_shared = 0;
+//    int FL_count = 0;
+//    int FR_count = 0;
+//    int BL_count = 0;
+//    int BR_count = 0;
+//    int FL_count_old = 0;
+//    int FR_count_old = 0;
+//    int BL_count_old = 0;
+//    int BR_count_old = 0;
+//    float vel_FL = 0;
+//    float vel_FR = 0;
+//    float vel_BL = 0;
+//    float vel_BR = 0;
 
 
     // Timing parameters
     // F = front, B = back, L = left, R = right   
-    volatile unsigned long FL_new_time = 0;
-    volatile unsigned long FR_new_time = 0;
-    volatile unsigned long BL_new_time = 0;
-    volatile unsigned long BR_new_time = 0;
-    volatile unsigned long FL_old_time = 0; 
-    volatile unsigned long FR_old_time = 0;
-    volatile unsigned long BL_old_time = 0;
-    volatile unsigned long BR_old_time = 0;
-    unsigned long FL_DeltaTime = 0;
-    unsigned long FR_DeltaTime = 0;
-    unsigned long BL_DeltaTime = 0;
-    unsigned long BR_DeltaTime = 0;
+//    volatile unsigned long FL_new_time = 0;
+//    volatile unsigned long FR_new_time = 0;
+//    volatile unsigned long BL_new_time = 0;
+//    volatile unsigned long BR_new_time = 0;
+//    volatile unsigned long FL_old_time = 0; 
+//    volatile unsigned long FR_old_time = 0;
+//    volatile unsigned long BL_old_time = 0;
+//    volatile unsigned long BR_old_time = 0;
+//    unsigned long FL_DeltaTime = 0;
+//    unsigned long FR_DeltaTime = 0;
+//    unsigned long BL_DeltaTime = 0;
+//    unsigned long BR_DeltaTime = 0;
 
     // Utility functions
     uint16_t microseconds2PWM(uint16_t microseconds);
@@ -162,18 +162,18 @@ void ecuCallback(const barc::ECU& ecu) {
   car.writeToActuators(ecu);
   received_ecu_signal = 1;
 }
-void incFLCallback() {
-  car.incFL();
-}
-void incFRCallback() {
-  car.incFR();
-}
-void incBLCallback() {
-  car.incBL();
-}
-void incBRCallback() {
-  car.incBR();
-}
+//void incFLCallback() {
+//  car.incFL();
+//}
+//void incFRCallback() {
+//  car.incFR();
+//}
+//void incBLCallback() {
+//  car.incBL();
+//}
+//void incBRCallback() {
+//  car.incBR();
+//}
 void calcSteeringCallback() {
   car.calcSteering();
 }
@@ -190,14 +190,14 @@ volatile unsigned long ecu_t0;
 // Encoder, RC Inputs, Electronic Control Unit, Ultrasound
 barc::ECU ecu;
 barc::ECU rc_inputs;
-barc::Encoder encoder;
-barc::Encoder vel_est;
+//barc::Encoder encoder;
+//barc::Encoder vel_est;
 
 ros::NodeHandle nh;
 
 
-ros::Publisher pub_encoder("encoder", &encoder);
-ros::Publisher pub_vel_est("vel_est", &vel_est); 
+//ros::Publisher pub_encoder("encoder", &encoder);
+//ros::Publisher pub_vel_est("vel_est", &vel_est); 
 ros::Publisher pub_rc_inputs("rc_inputs", &rc_inputs);
 ros::Subscriber<barc::ECU> sub_ecu("ecu_pwm", ecuCallback);
 
@@ -207,16 +207,16 @@ ARDUINO INITIALIZATION
 void setup()
 {
   // Set up encoders, rc input, and actuators
-  car.initEncoders();
+//  car.initEncoders();
   car.initRCInput();
   car.initActuators();
   // Start ROS node
   nh.initNode();
 
   // Publish and subscribe to topics
-  nh.advertise(pub_encoder);
+//  nh.advertise(pub_encoder);
   nh.advertise(pub_rc_inputs);
-  nh.advertise(pub_vel_est);
+//  nh.advertise(pub_vel_est);
 
   nh.subscribe(sub_ecu);
 
@@ -251,19 +251,19 @@ void loop() {
     car.readAndCopyInputs();
 
     // publish velocity estimate
-    car.calcVelocityEstimate();
-    vel_est.FL  = car.getVelEstFL();
-    vel_est.FR  = car.getVelEstFR();
-    vel_est.BL  = car.getVelEstBL();
-    vel_est.BR  = car.getVelEstBR();
-    pub_vel_est.publish(&vel_est); 
-
-    // publish encoder ticks
-    encoder.FL = car.getEncoderFL();
-    encoder.FR = car.getEncoderFR();
-    encoder.BL = car.getEncoderBL();
-    encoder.BR = car.getEncoderBR();
-    pub_encoder.publish(&encoder);
+//    car.calcVelocityEstimate();
+//    vel_est.FL  = car.getVelEstFL();
+//    vel_est.FR  = car.getVelEstFR();
+//    vel_est.BL  = car.getVelEstBL();
+//    vel_est.BR  = car.getVelEstBR();
+//    pub_vel_est.publish(&vel_est); 
+//
+//    // publish encoder ticks
+//    encoder.FL = car.getEncoderFL();
+//    encoder.FR = car.getEncoderFR();
+//    encoder.BL = car.getEncoderBL();
+//    encoder.BR = car.getEncoderBR();
+//    pub_encoder.publish(&encoder);
 
     rc_inputs.motor = car.getRCThrottle();
     rc_inputs.servo = car.getRCSteering();
@@ -293,16 +293,16 @@ float Car::saturateServo(float x) {
   return x;
 }
 
-void Car::initEncoders() {
-  pinMode(ENC_FR_PIN, INPUT_PULLUP);
-  pinMode(ENC_FL_PIN, INPUT_PULLUP);
-  pinMode(ENC_BR_PIN, INPUT_PULLUP);
-  pinMode(ENC_BL_PIN, INPUT_PULLUP);
-  enableInterrupt(ENC_FR_PIN, incFRCallback, CHANGE);
-  enableInterrupt(ENC_FL_PIN, incFLCallback, CHANGE);
-  enableInterrupt(ENC_BR_PIN, incBRCallback, CHANGE);
-  enableInterrupt(ENC_BL_PIN, incBLCallback, CHANGE);
-}
+//void Car::initEncoders() {
+//  pinMode(ENC_FR_PIN, INPUT_PULLUP);
+//  pinMode(ENC_FL_PIN, INPUT_PULLUP);
+//  pinMode(ENC_BR_PIN, INPUT_PULLUP);
+//  pinMode(ENC_BL_PIN, INPUT_PULLUP);
+//  enableInterrupt(ENC_FR_PIN, incFRCallback, CHANGE);
+//  enableInterrupt(ENC_FL_PIN, incFLCallback, CHANGE);
+//  enableInterrupt(ENC_BR_PIN, incBRCallback, CHANGE);
+//  enableInterrupt(ENC_BL_PIN, incBLCallback, CHANGE);
+//}
 
 void Car::initRCInput() {
   pinMode(THROTTLE_PIN, INPUT_PULLUP);
@@ -368,33 +368,33 @@ void Car::killMotor(){
   steering.writeMicroseconds( (uint16_t) servo_neutral_ms );
 }
 
-void Car::incFL() {
-  FL_count_shared++;
-  FL_old_time = FL_new_time; 
-  FL_new_time = micros();
-  updateFlagsShared |= FL_FLAG;
-}
-
-void Car::incFR() {
-  FR_count_shared++;
-  FR_old_time = FR_new_time;
-  FR_new_time = micros();
-  updateFlagsShared |= FR_FLAG;
-}
-
-void Car::incBL() {
-  BL_count_shared++;
-  BL_old_time = BL_new_time;
-  BL_new_time = micros();
-  updateFlagsShared |= BL_FLAG;
-}
-
-void Car::incBR() {
-  BR_count_shared++;
-  BR_old_time = BR_new_time;
-  BR_new_time = micros();
-  updateFlagsShared |= BR_FLAG;
-}
+//void Car::incFL() {
+//  FL_count_shared++;
+//  FL_old_time = FL_new_time; 
+//  FL_new_time = micros();
+//  updateFlagsShared |= FL_FLAG;
+//}
+//
+//void Car::incFR() {
+//  FR_count_shared++;
+//  FR_old_time = FR_new_time;
+//  FR_new_time = micros();
+//  updateFlagsShared |= FR_FLAG;
+//}
+//
+//void Car::incBL() {
+//  BL_count_shared++;
+//  BL_old_time = BL_new_time;
+//  BL_new_time = micros();
+//  updateFlagsShared |= BL_FLAG;
+//}
+//
+//void Car::incBR() {
+//  BR_count_shared++;
+//  BR_old_time = BR_new_time;
+//  BR_new_time = micros();
+//  updateFlagsShared |= BR_FLAG;
+//}
 
 void Car::readAndCopyInputs() {
   // check shared update flags to see if any channels have a new signal
@@ -412,22 +412,22 @@ void Car::readAndCopyInputs() {
     if(updateFlags & STEERING_FLAG) {
       steeringIn = steeringInShared;
     }
-    if(updateFlags & FL_FLAG) {
-      FL_count = FL_count_shared;
-      FL_DeltaTime = FL_new_time - FL_old_time;
-    }
-    if(updateFlags & FR_FLAG) {
-      FR_count = FR_count_shared;
-      FR_DeltaTime = FR_new_time - FR_old_time;
-    }
-    if(updateFlags & BL_FLAG) {
-      BL_count = BL_count_shared;
-      BL_DeltaTime = BL_new_time - BL_old_time;
-    }
-    if(updateFlags & BR_FLAG) {
-      BR_count = BR_count_shared;
-      BR_DeltaTime = BR_new_time - BR_old_time;
-    }
+//    if(updateFlags & FL_FLAG) {
+//      FL_count = FL_count_shared;
+//      FL_DeltaTime = FL_new_time - FL_old_time;
+//    }
+//    if(updateFlags & FR_FLAG) {
+//      FR_count = FR_count_shared;
+//      FR_DeltaTime = FR_new_time - FR_old_time;
+//    }
+//    if(updateFlags & BL_FLAG) {
+//      BL_count = BL_count_shared;
+//      BL_DeltaTime = BL_new_time - BL_old_time;
+//    }
+//    if(updateFlags & BR_FLAG) {
+//      BR_count = BR_count_shared;
+//      BR_DeltaTime = BR_new_time - BR_old_time;
+//    }
     // clear shared update flags and turn interrupts back on
     updateFlagsShared = 0;
     interrupts();
@@ -441,54 +441,54 @@ uint16_t Car::getRCSteering() {
   return steeringIn;
 }
 
-int Car::getEncoderFL() {
-  return FL_count;
-}
-int Car::getEncoderFR() {
-  return FR_count;
-}
-int Car::getEncoderBL() {
-  return BL_count;
-}
-int Car::getEncoderBR() {
-  return BR_count;
-}
-float Car::getVelEstFL() {
-  return vel_FL;
-}
-float Car::getVelEstFR() {
-  return vel_FR;
-}
-float Car::getVelEstBL() {
-  return vel_BL;
-}
-float Car::getVelEstBR() {
-  return vel_BR;
-}
+//int Car::getEncoderFL() {
+//  return FL_count;
+//}
+//int Car::getEncoderFR() {
+//  return FR_count;
+//}
+//int Car::getEncoderBL() {
+//  return BL_count;
+//}
+//int Car::getEncoderBR() {
+//  return BR_count;
+//}
+//float Car::getVelEstFL() {
+//  return vel_FL;
+//}
+//float Car::getVelEstFR() {
+//  return vel_FR;
+//}
+//float Car::getVelEstBL() {
+//  return vel_BL;
+//}
+//float Car::getVelEstBR() {
+//  return vel_BR;
+//}
 
-void Car::calcVelocityEstimate() {
-
-    // vel = distance / time
-    // distance = 2*pi*R/8 since there are 8 partitions
-    if(FL_count_old != FL_count){
-        vel_FL = 0.25*pi*R/(FL_DeltaTime/1000000.0);    }
-    else{ vel_FL = 0.0; }
-
-    if(FR_count_old != FR_count){
-        vel_FR = 0.25*pi*R/(FR_DeltaTime/1000000.0);    }
-    else{ vel_FR = 0.0; }
-
-    if(BL_count_old != BL_count){
-        vel_BL = 0.25*pi*R/(BL_DeltaTime/1000000.0);    }
-    else{ vel_BL = 0.0; }
-
-    if(BR_count_old != BR_count){
-        vel_BR = 0.25*pi*R/(BR_DeltaTime/1000000.0);    }
-    else{ vel_BR = 0.0; }
-
-    // update history
-    FL_count_old = FL_count;
-    FR_count_old = FR_count;
-    BL_count_old = BL_count;
-    BR_count_old = BR_count;
-}
+//void Car::calcVelocityEstimate() {
+//
+//    // vel = distance / time
+//    // distance = 2*pi*R/8 since there are 8 partitions
+//    if(FL_count_old != FL_count){
+//        vel_FL = 0.25*pi*R/(FL_DeltaTime/1000000.0);    }
+//    else{ vel_FL = 0.0; }
+//
+//    if(FR_count_old != FR_count){
+//        vel_FR = 0.25*pi*R/(FR_DeltaTime/1000000.0);    }
+//    else{ vel_FR = 0.0; }
+//
+//    if(BL_count_old != BL_count){
+//        vel_BL = 0.25*pi*R/(BL_DeltaTime/1000000.0);    }
+//    else{ vel_BL = 0.0; }
+//
+//    if(BR_count_old != BR_count){
+//        vel_BR = 0.25*pi*R/(BR_DeltaTime/1000000.0);    }
+//    else{ vel_BR = 0.0; }
+//
+//    // update history
+//    FL_count_old = FL_count;
+//    FR_count_old = FR_count;
+//    BL_count_old = BL_count;
+//    BR_count_old = BR_count;
+//}
