@@ -13,7 +13,7 @@ def handle_pose():
     br = tf2_ros.StaticTransformBroadcaster()
     t = TransformStamped()
     t.header.stamp = rospy.Time.now()
-    t.header.frame_id = "map"
+    t.header.frame_id = "odom"
     t.child_frame_id = "beacon_map"
     t.transform.translation.x = -init_pos.pose.pose.position.x
     t.transform.translation.y = -init_pos.pose.pose.position.y
@@ -44,5 +44,5 @@ if __name__ == "__main__":
     init_imu = rospy.wait_for_message("/imu", Imu)
     rospy.loginfo("Received Initial Hedge Pose")
     init_map(init_hedge, init_imu)
-
+    handle_pose()
     rospy.spin()
