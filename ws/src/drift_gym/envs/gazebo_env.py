@@ -83,7 +83,7 @@ class GazeboEnv(gym.Env):
                 self.previous_imu = {}
                 self.previous_pos = self.getPosData()
 
-                self.penalty = 1
+                self.penalty = 0
                 # Learning Parameters
                 self.radius = 1
                 self.throttle = 1750
@@ -225,9 +225,9 @@ class GazeboEnv(gym.Env):
         def getRewardExponential(self, state):
                 # desiredTangentialSpeed = 5          # Tangential speed with respect to car body.
                 # desiredNormalSpeed  = 0           # Perfect circular motion
-                desiredAngularVel = -3
+                desiredAngularVel = -3.5
                 desiredForwardVel = 0.5
-                desiredSideVel = 1.5
+                desiredSideVel = 2.0
                 desiredAccel = math.sqrt(desiredForwardVel**2 + desiredForwardVel**2)*desiredAngularVel
                 # velx = posData.twist[1].linear.x
                 # vely = posData.twist[1].linear.y
@@ -247,8 +247,7 @@ class GazeboEnv(gym.Env):
                 # sigma2 = 5
                 deviationMagnitude = (carSideVel - desiredSideVel)**2 + \
                                 (carForwardVel - desiredForwardVel)**2 + \
-                                (carAngularVel - desiredAngularVel)**2 + \
-                                     (carAccel - desiredAccel)**2
+                                (carAngularVel - desiredAngularVel)**2
 
                 #deviationMagnitude = (desiredTangentialSpeed - carTangentialSpeed)**2 + \
                 #                (carAngularVel - desiredAngularVel)**2
