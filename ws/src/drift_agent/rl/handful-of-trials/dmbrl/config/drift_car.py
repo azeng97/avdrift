@@ -15,7 +15,7 @@ import dmbrl.env
 class DriftCarConfigModule:
     ENV_NAME = "DriftCarGazeboContinuousBodyFrame4WD-v1"
     TASK_HORIZON = 150
-    NTRAIN_ITERS = 10
+    NTRAIN_ITERS = 5
     NROLLOUTS_PER_ITER = 10
     PLAN_HOR = 50
     MODEL_IN, MODEL_OUT = 4, 3
@@ -32,8 +32,8 @@ class DriftCarConfigModule:
                 "popsize": 2000
             },
             "CEM": {
-                "popsize": 400,
-                "num_elites": 40,
+                "popsize": 200,
+                "num_elites": 30,
                 "max_iters": 5,
                 "alpha": 0.1
             }

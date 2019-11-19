@@ -104,7 +104,7 @@ class DriftCarEnv(gym.Env):
 
         t = tf.TransformListener()
         m = TransformStamped()
-        m.header.frame_id = 'map'
+        m.header.frame_id = 'odom'
         m.child_frame_id = 'drift_car/base_link'
         m.transform.translation.x = position.x
         m.transform.translation.y = position.y
@@ -127,9 +127,9 @@ class DriftCarEnv(gym.Env):
         velVector.vector.x = velx
         velVector.vector.y = vely
         velVector.vector.z = velz
-        velVector.header.frame_id = "map"
+        velVector.header.frame_id = "odom"
         # velVectorTransformed = self.tl.transformVector3("base_link", velVector)
-        t.waitForTransform('/drift_car/base_link', 'map', rospy.Time(), rospy.Duration(0.1))
+        t.waitForTransform('/drift_car/base_link', 'odom', rospy.Time(), rospy.Duration(0.1))
         velVectorTransformed = t.transformVector3("drift_car/base_link", velVector)
         velxBody = velVectorTransformed.vector.x
         velyBody = velVectorTransformed.vector.y

@@ -21,6 +21,7 @@ import signal
 import subprocess
 import time
 from os import path
+import csv
 
 class GazeboEnv(gym.Env):
         metadata = {'render.modes': ['human']}
@@ -88,7 +89,11 @@ class GazeboEnv(gym.Env):
                 self.radius = 1
                 self.throttle = 1750
                 self.maxDeviationFromCenter = 6
-                self.evaluation = False
+                self.evaluation = True
+                self.record = False
+                if self.record:
+                        print("Recording")
+                        self.state_history = []
                 if self.evaluation:
                         print("Evaluating")
                         self.rewards = []
@@ -144,21 +149,19 @@ class GazeboEnv(gym.Env):
                 # rewardState = [state[-4], state[-2], state[-1]]
                 reward = self.getRewardExponential(state)
 
-                if self.evaluation:
+                if self.evaluation or self.record:
                         self.rewards.append(reward)
 
                 done = self.isDone(posData)
-                if done:
-                        if self.penalty:
-                                reward = 100
-                        else:
-                                reward = -100
 
 
                 #self.previous_imu = imuData
                 self.previous_pos = posData     
                 self.previous_action = action
                 print(state)
+                if self.record:
+                        self.state_history.append(state)
+                        self.action_history.append(action)
                 return state, reward, done, {}
 
         def getState(self, posData):
@@ -225,10 +228,10 @@ class GazeboEnv(gym.Env):
         def getRewardExponential(self, state):
                 # desiredTangentialSpeed = 5          # Tangential speed with respect to car body.
                 # desiredNormalSpeed  = 0           # Perfect circular motion
-                desiredAngularVel = -3
+                desiredAngularVel = -3.5
                 desiredForwardVel = 0.5
-                desiredSideVel = 1.5
-                desiredAccel = math.sqrt(desiredForwardVel**2 + desiredForwardVel**2)*desiredAngularVel
+                desiredSideVel = 2.0
+                # desiredAccel = math.sqrt(desiredForwardVel**2 + desiredForwardVel**2)*desiredAngularVel
                 # velx = posData.twist[1].linear.x
                 # vely = posData.twist[1].linear.y
                 # carTangentialSpeed = math.sqrt(velx ** 2 + vely ** 2)
@@ -236,7 +239,7 @@ class GazeboEnv(gym.Env):
                 carAngularVel = state[0]
                 carForwardVel = state[1]
                 carSideVel = state[2]
-                carAccel = math.sqrt(carForwardVel**2 + carSideVel**2)*carAngularVel
+                # carAccel = math.sqrt(carForwardVel**2 + carSideVel**2)*carAngularVel
 
                 # x = state[0]
                 # y = state[1]
@@ -247,8 +250,7 @@ class GazeboEnv(gym.Env):
                 # sigma2 = 5
                 deviationMagnitude = (carSideVel - desiredSideVel)**2 + \
                                 (carForwardVel - desiredForwardVel)**2 + \
-                                (carAngularVel - desiredAngularVel)**2 + \
-                                     (carAccel - desiredAccel)**2
+                                (carAngularVel - desiredAngularVel)**2
 
                 #deviationMagnitude = (desiredTangentialSpeed - carTangentialSpeed)**2 + \
                 #                (carAngularVel - desiredAngularVel)**2
@@ -349,6 +351,14 @@ class GazeboEnv(gym.Env):
                                 result_file = open("/home/azeng/results/result_mean.txt", "a")
                                 result_file.write(str(total_reward) + "\n")
                         self.rewards = []
+                if self.record:
+                        if self.state_history:
+                                history = zip(self.action_history, self.state_history, self.rewards)
+                        with open("/home/azeng/history/rollout.csv", "a") as history_file:
+                                writer = csv.writer(history_file, dialect="excel")
+                                for row in history:
+                                        writer.writerow(row)
+                        history_file.close()
 
 
                 return self.getState(posData)

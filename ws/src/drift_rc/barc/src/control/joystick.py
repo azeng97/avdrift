@@ -28,6 +28,7 @@ def rc_inputs_callback(data):
     global throttle, steering
     throttle = data.motor
     steering = data.servo
+    print(throttle, steering)
 
 def encoder_callback(data):
     global LF, RF, LR, RR
@@ -35,7 +36,7 @@ def encoder_callback(data):
     RF = data.FR
     LR = data.BL
     RR = data.BR
-    print(LF, RF, LR, RR)
+    #print(LF, RF, LR, RR)
 
 def main_auto():
     global throttle, steering
@@ -47,7 +48,7 @@ def main_auto():
     nh = Publisher('ecu_pwm', ECU, queue_size = 10)
 
     # set node rate
-    rateHz = 50
+    rateHz = 10
     dt = 1.0/rateHz
     rate = Rate(rateHz)
 
